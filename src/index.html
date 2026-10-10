@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>md-viewer</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./main.ts"></script>
+  </head>
+  <body>
+    <div class="win" id="app">
+      <header class="titlebar" data-tauri-drag-region>
+        <div class="brand" data-tauri-drag-region><span class="logo" data-tauri-drag-region></span>md-viewer</div>
+        <nav class="route" id="route" aria-label="Current path" data-tauri-drag-region></nav>
+        <div class="tb-actions">
+          <button class="tb-btn" id="openBtn" title="Open folder (Ctrl+O)"></button>
+          <button class="tb-icon" id="themeBtn"></button>
+        </div>
+        <div class="wc">
+          <button id="wcMin" aria-label="Minimize"><svg width="10" height="10" viewBox="0 0 10 10" stroke="currentColor" fill="none"><path d="M0 5.5h10" /></svg></button>
+          <button id="wcMax" aria-label="Maximize"></button>
+          <button id="wcClose" class="close" aria-label="Close"><svg width="10" height="10" viewBox="0 0 10 10" stroke="currentColor" fill="none"><path d="M.5.5l9 9M9.5.5l-9 9" /></svg></button>
+        </div>
+      </header>
+      <div class="body" id="body">
+        <aside class="side" id="side">
+          <div class="side-head">
+            <div class="root-name" id="rootName"></div>
+            <div class="root-path" id="rootPath"></div>
+            <label class="filter" id="filterBox"><span id="filterIcon"></span><input id="filter" type="search" placeholder="Filter files" spellcheck="false" autocomplete="off" aria-label="Filter files (Ctrl+P)" /></label>
+          </div>
+          <div class="tree-scroll"><div class="tree" id="tree" role="tree" aria-label="Markdown files"></div></div>
+          <div class="side-foot" id="sideFoot"></div>
+          <div class="resizer" id="resizer" role="separator" aria-orientation="vertical" aria-label="Resize sidebar"></div>
+        </aside>
+        <div class="main">
+          <div class="progress" id="progress"></div>
+          <main class="doc-scroll" id="docScroll" tabindex="-1"><div id="doc"></div></main>
+        </div>
+        <aside class="outline" id="outline">
+          <p class="ol-head">On this page</p>
+          <ol class="rtoc" id="toc"></ol>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>
