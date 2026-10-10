@@ -1,14 +1,14 @@
 ---
 status: Fixture
 updated: 2026-10-10
-owner: md-viewer
+owner: Metrodown
 purpose: Exercises every rendering feature in one file
 tags: [fixture, rendering]
 ---
 
 # Rendering fixture
 
-This file exercises every rendering feature md-viewer supports. Open it after any renderer
+This file exercises every rendering feature Metrodown supports. Open it after any renderer
 change and scan it top to bottom. Links: [the spec](spec.md), [its acceptance list](spec.md#acceptance),
 [the README](../README.md), [a section below](#code-blocks) and <https://github.com>.
 
@@ -128,7 +128,7 @@ flowchart LR
 
 ## Images
 
-![md-viewer icon](../src-tauri/icons/128x128.png)
+![Metrodown icon](../src-tauri/icons/128x128.png)
 
 ## Raw HTML
 

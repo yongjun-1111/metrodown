@@ -1,4 +1,4 @@
-# md-viewer specification
+# Metrodown specification
 
 Status: approved for implementation (2026-10-10). Design: direction A "line map", see
 `.impeccable/surfaces/src-index-html.md` and `design/mockups/index.html`.
@@ -25,6 +25,7 @@ Editing or saving, sync, plugins, export, Linux builds, footnotes and KaTeX math
 | Raw HTML | Allowed, sanitized with DOMPurify | Documents can embed HTML; scripts must never reach Tauri IPC |
 | Filesystem | Backend exposes read-only commands only | "Never modify the user's files" |
 | Window | Custom title bar (decorations off), drag regions, native min/max/close behaviour | The sign band carries the route breadcrumb |
+| Name | Metrodown (renamed from md-viewer in 0.2.0); the bundle identifier stays `com.yongjun1111.mdviewer` | The metro-map motif; keeping the identifier keeps saved settings, read positions and the single-instance lock |
 | Path identity | Paths compare case-insensitively on Windows and macOS (`pathKey`) | Both platforms' default file systems ignore case; case-sensitive macOS volumes are not supported |
 | Persistence | `localStorage` in the WebView: last root, expanded folders, theme, last-read position per file | No config files to manage |
 
@@ -60,8 +61,11 @@ Editing or saving, sync, plugins, export, Linux builds, footnotes and KaTeX math
    restores silently.
 10. The open file reloads when it changes on disk, keeping the scroll position.
 11. Theme follows Windows light/dark; a title-bar toggle overrides it.
-12. The installer registers `.md` / `.markdown` with Windows ("Open with", or the default app
-    once the user picks it). Opening a file from Explorer or a terminal while the viewer runs
+12. The installer registers `.md` / `.markdown` with Windows ("Open with" and Settings > Default
+    apps) and asks whether Metrodown should be the default; on yes it opens Metrodown's Default
+    apps page, because Windows lets only the user set a default. It does not ask when Metrodown
+    already is the default or the install is silent, and it removes an install under the old
+    name, md-viewer. Opening a file from Explorer or a terminal while the viewer runs
     hands it to the existing window (single instance) instead of starting a second one; Back
     returns to what was open before.
 13. A narrowing window hides the outline first (below 1100px), then the folder tree (below

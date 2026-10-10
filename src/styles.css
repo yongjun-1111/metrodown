@@ -1,4 +1,4 @@
-/* md-viewer — "line map" direction. Every top-level folder is a transit line. */
+/* Metrodown — "line map" direction. Every top-level folder is a transit line. */
 
 :root {
   --ui: "Segoe UI Variable Text", "Segoe UI", -apple-system, "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;

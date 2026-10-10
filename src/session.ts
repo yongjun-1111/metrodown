@@ -31,7 +31,7 @@ const inRoot = (p: string) => !!state.root && !!relativeParts(state.root, p);
 function refreshChrome() {
   renderTree();
   renderRoute();
-  void appWindow.setTitle(state.current ? `${basename(state.current)} — md-viewer` : "md-viewer");
+  void appWindow.setTitle(state.current ? `${basename(state.current)} — Metrodown` : "Metrodown");
 }
 
 /** Replaces the document with a message. Nothing is current, so no read position is saved for it. */
@@ -225,7 +225,7 @@ function showWelcome() {
     : "";
   showMessage(
     "Open a folder to start reading",
-    "md-viewer shows the Markdown files in a folder and nothing else. You can also drop a folder or a .md file onto this window.",
+    "Metrodown shows the Markdown files in a folder and nothing else. You can also drop a folder or a .md file onto this window.",
     `<button class="primary" data-act="open">${svg("folderOpen", 16)}Open folder</button>${list}`,
   );
 }

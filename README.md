@@ -1,4 +1,4 @@
-# md-viewer
+# Metrodown
 
 A lightweight, read-only Markdown viewer for Windows and macOS.
 
@@ -10,16 +10,18 @@ A lightweight, read-only Markdown viewer for Windows and macOS.
 
 ## Opening files from Explorer
 
-The installer registers `.md` and `.markdown`. To make md-viewer the default, right-click a
-`.md` file → Open with → Choose another app → md-viewer → Always. A file opened while the viewer
-is running goes to the existing window. From a terminal: `md-viewer.exe path	oile.md`.
+The installer registers `.md` and `.markdown` and offers to make Metrodown the default app: it
+opens Settings on Metrodown's Default apps page, where "Set default" finishes it (Windows lets
+only the user change a default). Later, right-click a `.md` file, then Open with, Choose another
+app, Metrodown, Always. A file opened while the viewer is running goes to the existing window.
+From a terminal: `metrodown.exe path\to\file.md`.
 
 ## macOS
 
 Download the `.dmg` from the latest Release. The app is unsigned (Apple silicon only): the
-first time, right-click md-viewer.app → Open, or allow it in System Settings → Privacy &
+first time, right-click Metrodown.app → Open, or allow it in System Settings → Privacy &
 Security. To make it the default for Markdown, Finder → a `.md` file → Get Info → Open with →
-md-viewer → Change All.
+Metrodown → Change All.
 
 ## Releases
 

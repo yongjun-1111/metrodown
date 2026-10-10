@@ -286,7 +286,7 @@ fn main() {
             launch_path
         ])
         .build(tauri::generate_context!())
-        .expect("error while building md-viewer");
+        .expect("error while building Metrodown");
     app.run(|_app, _event| {
         // macOS passes files opened from Finder as an event, not as arguments.
         #[cfg(target_os = "macos")]
@@ -378,10 +378,10 @@ mod tests {
         let t = TempTree::new("args");
         t.file("docs/a.md");
         let args = |v: &[&str]| v.iter().map(|s| s.to_string()).collect::<Vec<_>>();
-        let found = path_from_args(args(&["md-viewer.exe", "docs\\a.md"]), &t.0).unwrap();
+        let found = path_from_args(args(&["metrodown.exe", "docs\\a.md"]), &t.0).unwrap();
         assert_eq!(PathBuf::from(found), t.0.join("docs\\a.md"));
-        assert_eq!(path_from_args(args(&["md-viewer.exe", "missing.md"]), &t.0), None);
-        assert_eq!(path_from_args(args(&["md-viewer.exe"]), &t.0), None);
+        assert_eq!(path_from_args(args(&["metrodown.exe", "missing.md"]), &t.0), None);
+        assert_eq!(path_from_args(args(&["metrodown.exe"]), &t.0), None);
     }
 
     #[test]

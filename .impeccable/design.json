@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "generatedAt": "2026-10-10T17:40:00+09:00",
-  "title": "Design System: md-viewer",
+  "title": "Design System: Metrodown",
   "extensions": {
     "colorMeta": {
       "line-1": {
@@ -184,7 +184,7 @@
   ],
   "narrative": {
     "northStar": "The Line Map",
-    "overview": "md-viewer reads a repository the way a rider reads a metro map. Every top-level folder is a line with a colour; every Markdown file is a station; the open file is the transfer station. The tree, the title-bar route and the outline speak this one language, so the reader always knows which line they are on, which stop they are at, and how much of the document is behind them. Around that map sits a calm reading column modelled on GitHub-style Markdown: a white ground, a 46rem measure, generous line height, and no decoration inside the text that the document did not ask for.",
+    "overview": "Metrodown reads a repository the way a rider reads a metro map. Every top-level folder is a line with a colour; every Markdown file is a station; the open file is the transfer station. The tree, the title-bar route and the outline speak this one language, so the reader always knows which line they are on, which stop they are at, and how much of the document is behind them. Around that map sits a calm reading column modelled on GitHub-style Markdown: a white ground, a 46rem measure, generous line height, and no decoration inside the text that the document did not ask for.",
     "keyCharacteristics": [
       "Nine Seoul-metro line colours, one per top-level folder, shown as plain coloured symbols; the first colour belongs to files at the root.",
       "Line form carries state: solid behind the reader, dashed ahead, a white ring for \"you are here\".",

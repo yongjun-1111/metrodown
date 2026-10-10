@@ -4,7 +4,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "md-viewer",
+        "title": "Metrodown",
         "width": 1320,
         "height": 860,
         "minWidth": 400,

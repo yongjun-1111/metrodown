@@ -1,5 +1,5 @@
 ---
-name: md-viewer
+name: Metrodown
 description: A read-only Markdown viewer where every top-level folder is a transit line.
 colors:
   line-1: "#0052a4"
@@ -101,13 +101,13 @@ components:
     padding: "16px 18px"
 ---
 
-# Design System: md-viewer
+# Design System: Metrodown
 
 ## Overview
 
 **Creative North Star: "The Line Map"**
 
-md-viewer reads a repository the way a rider reads a metro map. Every top-level folder is a line with a colour; every Markdown file is a station; the open file is the transfer station. The tree, the title-bar route and the outline speak this one language, so the reader always knows which line they are on, which stop they are at, and how much of the document is behind them.
+Metrodown reads a repository the way a rider reads a metro map. Every top-level folder is a line with a colour; every Markdown file is a station; the open file is the transfer station. The tree, the title-bar route and the outline speak this one language, so the reader always knows which line they are on, which stop they are at, and how much of the document is behind them.
 
 Around that map sits a calm reading column modelled on GitHub-style Markdown: a white ground, a 46rem measure, generous line height, and no decoration inside the text that the document did not ask for. The chrome is dense and quiet; the column is open and slow. The look refuses the category default of a grey editor explorer beside an anonymous preview.
 

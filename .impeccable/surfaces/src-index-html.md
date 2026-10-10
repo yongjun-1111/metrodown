@@ -7,7 +7,7 @@ related_targets: []
 
 ## Scope
 
-Viewer shell of md-viewer (the whole app window): title bar, folder tree, document pane, outline. Visitor mode: Read (the tree and title bar are Operate-style chrome around a reading column).
+Viewer shell of Metrodown (the whole app window): title bar, folder tree, document pane, outline. Visitor mode: Read (the tree and title bar are Operate-style chrome around a reading column).
 
 ## Audience and task
 
