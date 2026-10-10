@@ -53,14 +53,29 @@ export function slugify(text: string): string {
 
 // East Asian wide characters (Hangul, CJK, full-width forms, emoji) occupy two columns in
 // the text editors and terminals where diagrams are drawn.
-const WIDE = /[ᄀ-ᅟ⺀-〾ぁ-㏿㐀-䶿一-鿿ꥠ-꥿가-힣豈-﫿︰-﹏＀-｠￠-￦\u{1f300}-\u{1f64f}\u{1f900}-\u{1f9ff}\u{20000}-\u{3fffd}]/gu;
+const WIDE = /[ᄀ-ᅟ⺀-〾ぁ-㏿㐀-䶿一-鿿ꥠ-꥿가-힣豈-﫿︰-﹏＀-｠￠-￦\u{1f300}-\u{1faff}\u{20000}-\u{3fffd}]/u;
 const BOX_DRAWING = /[─-╿]/;
+// Characters as the reader sees them: an emoji with its skin tone or zero-width-joined parts
+// (a person with a laptop, a couple with a heart) is one grapheme and gets one cell.
+const graphemes = new Intl.Segmenter(undefined, { granularity: "grapheme" });
 
 /**
  * Puts each wide character in a two-column cell so text diagrams keep their columns whatever
- * font supplies the glyph. Safe on highlighted HTML: markup and entities are ASCII only.
+ * font supplies the glyph. Only text between tags and entities is split into characters, so a
+ * combining mark next to markup cannot pull the markup into a cell.
  */
-const gridCells = (html: string) => html.replace(WIDE, '<span class="w">$&</span>');
+function gridCells(html: string): string {
+  if (!WIDE.test(html)) return html;
+  return html
+    .split(/(<[^>]*>|&[#\w]+;)/)
+    .map((part, i) => {
+      if (i % 2 === 1 || !WIDE.test(part)) return part;
+      let out = "";
+      for (const { segment } of graphemes.segment(part)) out += WIDE.test(segment) ? `<span class="w">${segment}</span>` : segment;
+      return out;
+    })
+    .join("");
+}
 
 const md: MarkdownIt = markdownit({
   html: true,

@@ -7,7 +7,13 @@ const trimEnd = (p: string) => p.replace(isPosix(p) ? /\/+$/ : /\\+$/, "");
 
 export const norm = (p: string): string => (isPosix(p) ? p : p.replace(/\//g, "\\"));
 
-export const samePath = (a: string, b: string): boolean => norm(a).toLowerCase() === norm(b).toLowerCase();
+/**
+ * Comparison and storage key for a path. Case is ignored on both platforms: Windows and the
+ * default macOS volume format are case-insensitive.
+ */
+export const pathKey = (p: string): string => norm(p).toLowerCase();
+
+export const samePath = (a: string, b: string): boolean => pathKey(a) === pathKey(b);
 
 export const isMarkdown = (p: string): boolean => /\.(md|markdown)$/i.test(p);
 
@@ -94,6 +100,6 @@ export function relativeParts(root: string, p: string): string[] | null {
   const sep = sepOf(root);
   const r = trimEnd(norm(root));
   const s = norm(p);
-  if (!s.toLowerCase().startsWith(r.toLowerCase() + sep)) return null;
+  if (!pathKey(s).startsWith(pathKey(r) + sep)) return null;
   return s.slice(r.length + 1).split(sep).filter(Boolean);
 }

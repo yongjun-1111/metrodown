@@ -6,7 +6,7 @@ import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { appWindow, el, escapeHtml } from "./dom";
 import { svg } from "./icons";
-import { basename, dirname, isMarkdown, relativeParts, resolvePath, rootOf, samePath, splitLink } from "./paths";
+import { basename, dirname, isMarkdown, pathKey, relativeParts, resolvePath, rootOf, samePath, splitLink } from "./paths";
 import { saveReadPosition, scrollToId, showDocument, showMessage } from "./reader";
 import { state, type FileData, type TreeNode } from "./state";
 import { store } from "./store";
@@ -22,6 +22,9 @@ let historyTarget: number | null = null;
 let openGen = 0;
 let rootGen = 0;
 let scanGen = 0;
+let pathGen = 0; // opens from outside the document: launch, hand-over, drop, recent folders
+/** Resolves once the "open-path" listener is registered. */
+let listening: Promise<unknown> = Promise.resolve();
 
 const inRoot = (p: string) => !!state.root && !!relativeParts(state.root, p);
 
@@ -59,7 +62,7 @@ export async function openFile(path: string, opts: OpenOpts = {}): Promise<boole
     history.splice(historyIndex + 1, Infinity, path);
     historyIndex = history.length - 1;
   }
-  store.set(`last:${state.root!.toLowerCase()}`, path);
+  store.set(`last:${pathKey(state.root!)}`, path);
   expandTo(path);
   showDocument(data, path, lineFor(path), opts);
   refreshChrome();
@@ -76,14 +79,23 @@ export function reloadCurrent(quiet = false) {
   if (state.current) void openFile(state.current, { push: false, keepScroll: true, quiet });
 }
 
-/** Opens a Markdown file wherever it is; one outside the root opens its own project, keeping history. */
-async function openAnywhere(path: string, opts: OpenOpts = {}): Promise<boolean> {
+/**
+ * Opens an existing Markdown file: in the root, or else in its own project. `wanted` lets a
+ * caller drop the open when a newer one started while the project was being looked up.
+ */
+async function openMarkdown(path: string, opts: OpenOpts = {}, keepHistory = true, wanted = () => true): Promise<boolean> {
   if (inRoot(path)) return openFile(path, opts);
-  if ((await invoke<string>("path_kind", { path })) !== "file") {
+  const root = await invoke<string>("project_root", { path });
+  return wanted() && openRoot(root, { ...opts, file: path, keepHistory });
+}
+
+/** Opens a Markdown file from a link or history, reporting one that has gone. */
+async function openAnywhere(path: string, opts: OpenOpts = {}): Promise<boolean> {
+  if (!inRoot(path) && (await invoke<string>("path_kind", { path })) !== "file") {
     showError("This file could not be opened", `File not found: ${path}`);
     return false;
   }
-  return openRoot(await invoke<string>("project_root", { path }), { ...opts, file: path, keepHistory: true });
+  return openMarkdown(path, opts);
 }
 
 export async function goHistory(step: number) {
@@ -156,7 +168,7 @@ async function rescan() {
 /** Opens a folder and then `target.file`, the last file read there, or its README. */
 async function openRoot(root: string, target: OpenOpts & { file?: string; keepHistory?: boolean } = {}): Promise<boolean> {
   const gen = ++rootGen;
-  openGen++; // a read still in flight belongs to the previous folder
+  const fileGen = ++openGen; // a read still in flight belongs to the previous folder
   scanGen++; // and so does a pending rescan
   saveReadPosition();
   state.root = rootOf(root);
@@ -174,9 +186,11 @@ async function openRoot(root: string, target: OpenOpts & { file?: string; keepHi
   if (!tree || gen !== rootGen) return false;
   setTree(tree);
   restoreExpanded();
+  if (state.current) expandTo(state.current);
   refreshChrome();
   void invoke("watch_root", { root: state.root }).catch(() => undefined);
-  const last = store.get(`last:${state.root.toLowerCase()}`);
+  if (openGen !== fileGen) return true; // a file opened during the scan (link, hand-over) stays
+  const last = store.get(`last:${pathKey(state.root)}`);
   const file = target.file ?? (last && inRoot(last) ? last : null) ?? findReadme(tree);
   if (file) return openFile(file, target);
   showMessage("No Markdown here", "This folder has no Markdown files. Open another folder to start reading.");
@@ -193,13 +207,13 @@ export async function pickFolder() {
  * `keepHistory` lets Back return to what was open before (files handed over by Windows).
  */
 export async function openPath(p: string, keepHistory = false) {
+  const gen = ++pathGen;
+  const wanted = () => gen === pathGen; // a later drop, hand-over or launch wins
   const kind = await invoke<string>("path_kind", { path: p });
+  if (!wanted()) return;
   if (kind === "dir") await openRoot(p);
   else if (kind === "missing") showError("This path no longer exists", p);
-  else if (isMarkdown(p)) {
-    if (inRoot(p)) await openFile(p);
-    else await openRoot(await invoke<string>("project_root", { path: p }), { file: p, keepHistory });
-  }
+  else if (isMarkdown(p)) await openMarkdown(p, {}, keepHistory, wanted);
 }
 
 function showWelcome() {
@@ -218,10 +232,17 @@ function showWelcome() {
 
 /** Reopens what was open last time, or the path the app was launched with. */
 export async function startSession() {
+  // Once launch_path has answered, later files arrive as "open-path" events, so listen first.
+  const gen = pathGen;
+  await listening;
   const launch = await invoke<string | null>("launch_path");
+  // A path handed over while these calls ran is newer than both the launch path and the last root.
+  if (gen !== pathGen) return;
+  if (launch) return openPath(launch);
   const last = store.get("root");
-  if (launch) await openPath(launch);
-  else if (last && (await invoke<string>("path_kind", { path: last })) === "dir") await openRoot(last);
+  const reopen = !!last && (await invoke<string>("path_kind", { path: last })) === "dir";
+  if (gen !== pathGen) return;
+  if (reopen) await openRoot(last!);
   else showWelcome();
 }
 
@@ -252,7 +273,7 @@ export function initSession() {
   });
 
   // A .md file opened from Explorer or a terminal while the app is running (single instance).
-  void listen<string>("open-path", ({ payload }) => void openPath(payload, true));
+  listening = listen<string>("open-path", ({ payload }) => void openPath(payload, true));
 
   void getCurrentWebview().onDragDropEvent((e) => {
     if (e.payload.type === "drop" && e.payload.paths.length) void openPath(e.payload.paths[0]);

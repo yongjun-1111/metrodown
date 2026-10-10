@@ -5,12 +5,15 @@ import { el } from "./dom";
 
 let mermaid: Promise<Mermaid> | null = null;
 let seq = 0;
+let drawGen = 0; // a newer draw (theme change, next document) supersedes one still rendering
 
 /** Draws every Mermaid block in the document, or redraws them after a theme change. */
 export async function drawDiagrams() {
+  const gen = ++drawGen;
   const blocks = [...el.doc.querySelectorAll<HTMLElement>("pre.mermaid-src, figure.mermaid")];
   if (!blocks.length) return;
   const m = await (mermaid ??= import("mermaid").then((mod) => mod.default));
+  if (gen !== drawGen) return;
   // Mermaid's base theme, coloured from the app's own tokens so diagrams follow light and dark.
   const css = getComputedStyle(document.documentElement);
   const token = (name: string) => css.getPropertyValue(name).trim();
@@ -38,13 +41,14 @@ export async function drawDiagrams() {
     const source = block.dataset.source ?? block.textContent ?? "";
     try {
       const { svg } = await m.render(`mermaid-${++seq}`, source);
-      if (!block.isConnected) continue; // the reader moved on to another document
+      if (gen !== drawGen) return;
       const figure = document.createElement("figure");
       figure.className = "mermaid";
       figure.dataset.source = source;
       figure.innerHTML = svg;
       block.replaceWith(figure);
     } catch {
+      if (gen !== drawGen) return;
       // Invalid diagrams stay as readable source, labelled so they do not look like a code sample.
       block.classList.add("mermaid-error");
     }

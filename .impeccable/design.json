@@ -121,11 +121,6 @@
         "name": "state",
         "value": "0.15s ease-out",
         "purpose": "Chevron rotation, button hover fills."
-      },
-      {
-        "name": "progress",
-        "value": "width 0.12s linear",
-        "purpose": "Reading progress line."
       }
     ],
     "breakpoints": [
@@ -134,8 +129,16 @@
         "value": "1100px"
       },
       {
+        "name": "no-sidebar",
+        "value": "720px"
+      },
+      {
         "name": "compact-doc",
         "value": "900px"
+      },
+      {
+        "name": "narrow-doc",
+        "value": "520px"
       }
     ]
   },
@@ -160,9 +163,9 @@
       "name": "Line-map Tree",
       "kind": "nav",
       "refersTo": "tree-row",
-      "description": "One trunk per top-level folder; a nested file sits beside it and the open file is joined by a branch.",
-      "html": "<div class=\"ds-tree\"><div class=\"ds-row ds-dir\"><span class=\"ds-badge\"></span>docs</div><div class=\"ds-row ds-file\"><span class=\"ds-g\"></span><span class=\"ds-stop\"></span>spec</div><div class=\"ds-row ds-dir ds-sub\"><span class=\"ds-g\"></span>adr</div><div class=\"ds-row ds-file ds-deep ds-active\"><span class=\"ds-g\"></span><span class=\"ds-branch\"></span><span class=\"ds-stop\"></span>0001-stack</div></div>",
-      "css": ".ds-tree { --lc: #00a84d; width: 260px; background: #f3f5f8; padding: 4px 0; font: 13.5px 'Segoe UI Variable Text', 'Segoe UI', sans-serif; color: #1c222b; } .ds-row { position: relative; height: 29px; display: flex; align-items: center; gap: 6px; padding-left: 34px; } .ds-row:hover { background: #e7ebf1; } .ds-dir { padding-left: 12px; font-weight: 600; } .ds-badge { width: 12px; height: 12px; border-radius: 50%; background: var(--lc); } .ds-g { position: absolute; left: 19px; top: 0; bottom: 0; width: 2px; background: var(--lc); } .ds-stop { position: absolute; left: 20px; top: 50%; width: 10px; height: 10px; border-radius: 50%; background: #f3f5f8; border: 2px solid var(--lc); transform: translate(-50%, -50%); } .ds-active { background: color-mix(in srgb, var(--lc) 13%, transparent); font-weight: 620; } .ds-active .ds-stop { width: 15px; height: 15px; border-width: 3.5px; background: #fff; } .ds-sub { padding-left: 28px; font-weight: 600; } .ds-deep { padding-left: 50px; } .ds-deep .ds-stop { left: 36px; } .ds-branch { position: absolute; left: 20px; top: 50%; width: 16px; height: 2px; margin-top: -1px; background: var(--lc); }"
+      "description": "One trunk drops from each top-level folder's symbol; each depth has its own column, and the open file is joined by a branch.",
+      "html": "<div class=\"ds-tree\"><div class=\"ds-row ds-dir\"><span class=\"ds-chev\"></span><span class=\"ds-badge\"></span>docs</div><div class=\"ds-row ds-file\"><span class=\"ds-g\"></span><span class=\"ds-stop\"></span>spec</div><div class=\"ds-row ds-dir ds-sub\"><span class=\"ds-g\"></span><span class=\"ds-chev\"></span>adr</div><div class=\"ds-row ds-file ds-deep ds-active\"><span class=\"ds-g\"></span><span class=\"ds-branch\"></span><span class=\"ds-stop\"></span>0001-stack</div><div class=\"ds-row ds-file ds-root\"><span class=\"ds-stop\"></span>README</div></div>",
+      "css": ".ds-tree { --lc: #00a84d; width: 260px; background: #f3f5f8; padding: 4px 0; font: 13.5px 'Segoe UI Variable Text', 'Segoe UI', sans-serif; color: #1c222b; } .ds-row { position: relative; height: 29px; display: flex; align-items: center; gap: 6px; padding-left: 70px; } .ds-row:hover { background: #e7ebf1; } .ds-dir { padding-left: 12px; font-weight: 600; } .ds-chev { width: 16px; height: 16px; } .ds-badge { width: 12px; height: 12px; border-radius: 50%; background: var(--lc); } .ds-g { position: absolute; left: 39px; top: 0; bottom: 0; width: 2px; background: var(--lc); } .ds-stop { position: absolute; left: 58px; top: 50%; width: 10px; height: 10px; border-radius: 50%; background: #f3f5f8; border: 2px solid var(--lc); transform: translate(-50%, -50%); } .ds-active { background: color-mix(in srgb, var(--lc) 13%, transparent); font-weight: 620; } .ds-active .ds-stop { width: 15px; height: 15px; border-width: 3.5px; background: #fff; } .ds-sub { padding-left: 50px; font-weight: 600; } .ds-deep { padding-left: 88px; } .ds-deep .ds-stop { left: 76px; } .ds-branch { position: absolute; left: 40px; top: 50%; width: 36px; height: 2px; margin-top: -1px; background: var(--lc); } .ds-root { --lc: #0a5bd3; padding-left: 52px; } .ds-root .ds-stop { left: 40px; }"
     },
     {
       "name": "Outline Route",
@@ -181,7 +184,7 @@
   ],
   "narrative": {
     "northStar": "The Line Map",
-    "overview": "md-viewer reads a repository the way a rider reads a metro map. Every top-level folder is a line with a number and a colour; every Markdown file is a station; the open file is the transfer station. The tree, the title-bar route and the outline speak this one language, so the reader always knows which line they are on, which stop they are at, and how much of the document is behind them. Around that map sits a calm reading column modelled on GitHub-style Markdown: a white ground, a 46rem measure, generous line height, and no decoration inside the text that the document did not ask for.",
+    "overview": "md-viewer reads a repository the way a rider reads a metro map. Every top-level folder is a line with a colour; every Markdown file is a station; the open file is the transfer station. The tree, the title-bar route and the outline speak this one language, so the reader always knows which line they are on, which stop they are at, and how much of the document is behind them. Around that map sits a calm reading column modelled on GitHub-style Markdown: a white ground, a 46rem measure, generous line height, and no decoration inside the text that the document did not ask for.",
     "keyCharacteristics": [
       "Nine Seoul-metro line colours, one per top-level folder, shown as plain coloured symbols; the first colour belongs to files at the root.",
       "Line form carries state: solid behind the reader, dashed ahead, a white ring for \"you are here\".",

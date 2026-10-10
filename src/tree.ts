@@ -1,13 +1,13 @@
 // The line map: the file tree in the sidebar and the route breadcrumb in the title bar.
 import { el, escapeHtml } from "./dom";
 import { svg } from "./icons";
-import { basename, joinPath, relativeParts, samePath } from "./paths";
+import { basename, joinPath, pathKey, relativeParts, samePath } from "./paths";
 import { state, type TreeNode } from "./state";
 import { store } from "./store";
 
 type Row = { node: TreeNode; depth: number; line: number };
 
-const key = (p: string) => p.toLowerCase();
+const key = pathKey;
 const stripExt = (name: string) => name.replace(/\.(md|markdown)$/i, "");
 const lineOf = new Map<string, number>(); // top-level folder name -> line number
 let expanded = new Set<string>();
@@ -78,24 +78,44 @@ function highlight(name: string, q: string): string {
   return escapeHtml(name.slice(0, i)) + "<mark>" + escapeHtml(name.slice(i, i + q.length)) + "</mark>" + escapeHtml(name.slice(i + q.length));
 }
 
-// The line runs down the left edge of each top-level folder; files deeper down sit beside it,
-// and the open file is joined to it by a branch.
-const TRUNK_X = 20;
-const indent = (depth: number) => 12 + depth * 16;
+// Every depth has its own column: a top-level folder's symbol and the root-level files share the
+// first one, and each level below steps right. The line drops from the folder's symbol; files
+// deeper down sit off it, and the open file is joined to it by a branch.
+const TRUNK_X = 40; // centre of the first column; .trunk and .branch in styles.css match it
+const column = (depth: number) => TRUNK_X + depth * 18; // centre of a row's symbol or chevron
 
-function rowHtml({ node, depth, line }: Row, index: number, q: string): string {
+const isRootFile = (r?: Row) => r !== undefined && r.depth === 0 && !r.node.children;
+
+/** The vertical line through a row, given the rows above and below it. */
+function trunkHtml(row: Row, prev?: Row, next?: Row): string {
+  const span = (top: string, bottom: string) => `<span class="trunk" style="top:${top};bottom:${bottom}"></span>`;
+  if (row.depth > 0) return span("0", "0");
+  if (row.node.children) {
+    // An open top-level folder starts its line just below its 12px symbol.
+    return next && next.depth > 0 ? span("calc(50% + 6px)", "0") : "";
+  }
+  // Root-level files: the line runs only between their own stops, apart from the folder above.
+  const top = isRootFile(prev) ? "0" : "50%";
+  const bottom = isRootFile(next) ? "0" : "50%";
+  return top === "50%" && bottom === "50%" ? "" : span(top, bottom); // a lone root file has no line
+}
+
+function rowHtml(row: Row, index: number, q: string, prev?: Row, next?: Row): string {
+  const { node, depth, line } = row;
   const isDir = !!node.children;
   const attrs = `role="treeitem" aria-level="${depth + 1}" tabindex="${index === focusIndex ? 0 : -1}" data-i="${index}"`;
-  const trunk = isDir && depth === 0 ? "" : '<span class="trunk"></span>';
+  const trunk = trunkHtml(row, prev, next);
   if (isDir) {
     const open = isOpen(node, q);
+    // Top-level: chevron, then the line's symbol in the first column. Below: the chevron is the symbol.
+    const pad = depth === 0 ? 12 : column(depth) - 8;
     const symbol = depth === 0 ? '<span class="badge"></span>' : "";
-    return `<div class="row dir l${line}${open ? " open" : ""}" ${attrs} aria-expanded="${open}" style="padding-left:${indent(depth)}px">${trunk}<span class="chev">${svg("chevron", 14, 2)}</span>${symbol}<span class="nm">${escapeHtml(node.name)}</span></div>`;
+    return `<div class="row dir l${line}${open ? " open" : ""}" ${attrs} aria-expanded="${open}" style="padding-left:${pad}px">${trunk}<span class="chev">${svg("chevron", 14, 2)}</span>${symbol}<span class="nm">${escapeHtml(node.name)}</span></div>`;
   }
   const active = state.current !== null && samePath(node.path, state.current);
-  const stopX = indent(Math.max(depth - 1, 0)) + 8;
+  const stopX = column(depth);
   const branch = active && stopX > TRUNK_X ? `<span class="branch" style="width:${stopX - TRUNK_X}px"></span>` : "";
-  return `<div class="row file l${line}${active ? " active" : ""}" ${attrs} aria-selected="${active}" title="${escapeHtml(node.name)}" style="padding-left:${indent(Math.max(depth, 1)) + 6}px">${trunk}${branch}<span class="stop" style="left:${stopX}px"></span><span class="nm">${highlight(stripExt(node.name), q)}</span></div>`;
+  return `<div class="row file l${line}${active ? " active" : ""}" ${attrs} aria-selected="${active}" title="${escapeHtml(node.name)}" style="padding-left:${stopX + 12}px">${trunk}${branch}<span class="stop" style="left:${stopX}px"></span><span class="nm">${highlight(stripExt(node.name), q)}</span></div>`;
 }
 
 export function renderTree() {
@@ -112,7 +132,7 @@ export function renderTree() {
   if (focusIndex >= rows.length) focusIndex = rows.length - 1;
   if (focusIndex < 0) focusIndex = Math.max(0, rows.findIndex((r) => state.current && samePath(r.node.path, state.current)));
   el.tree.innerHTML = rows.length
-    ? rows.map((r, i) => rowHtml(r, i, q)).join("")
+    ? rows.map((r, i) => rowHtml(r, i, q, rows[i - 1], rows[i + 1])).join("")
     : `<div class="tree-empty">${q ? "No file names match this filter." : "No Markdown files in this folder."}</div>`;
   el.sideFoot.innerHTML = `<span>${fileCount} document${fileCount === 1 ? "" : "s"}</span><span>Other files hidden</span>`;
 }

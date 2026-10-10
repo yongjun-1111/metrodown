@@ -5,7 +5,7 @@ import { drawDiagrams } from "./diagrams";
 import { el, escapeHtml } from "./dom";
 import { DATE_KEYS, metaDate, metaStatus, STATUS_KEYS, type FrontMatter } from "./frontmatter";
 import { svg } from "./icons";
-import { basename, dirname, relativeParts, resolvePath } from "./paths";
+import { basename, dirname, pathKey, relativeParts, resolvePath } from "./paths";
 import { renderMarkdown, type Heading } from "./render";
 import { state, type FileData } from "./state";
 import { store } from "./store";
@@ -110,7 +110,7 @@ export function showDocument(data: FileData, path: string, line: number, opts: {
   const sections = headings.filter((h) => h.level === 2 || h.level === 3);
   outline = sections.length ? sections : headings.filter((h, i) => h.level === 1 && i > 0);
 
-  const saved = positions[path.toLowerCase()];
+  const saved = positions[pathKey(path)];
   // The flag is for coming back to a document, not for flipping between documents in one sitting.
   const flagged = !opts.keepScroll && !!saved && saved.t < SESSION_START && saved.top > 200;
   renderOutline(flagged ? saved.id : null, saved?.t ?? 0);
@@ -180,7 +180,7 @@ export function saveReadPosition() {
   const id = outline.length ? outline[currentSection()]?.id ?? null : null;
   const top = Math.round(el.scroll.scrollTop);
   const anchor = id ? headingTop(id) : null;
-  positions[state.current.toLowerCase()] = { top, id, off: anchor === null ? undefined : top - anchor, t: Date.now() };
+  positions[pathKey(state.current)] = { top, id, off: anchor === null ? undefined : top - anchor, t: Date.now() };
   const keys = Object.keys(positions);
   if (keys.length > MAX_POSITIONS) {
     keys.sort((a, b) => positions[a].t - positions[b].t).slice(0, keys.length - MAX_POSITIONS).forEach((k) => delete positions[k]);

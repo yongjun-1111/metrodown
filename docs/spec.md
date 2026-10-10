@@ -25,6 +25,7 @@ Editing or saving, sync, plugins, export, Linux builds, footnotes and KaTeX math
 | Raw HTML | Allowed, sanitized with DOMPurify | Documents can embed HTML; scripts must never reach Tauri IPC |
 | Filesystem | Backend exposes read-only commands only | "Never modify the user's files" |
 | Window | Custom title bar (decorations off), drag regions, native min/max/close behaviour | The sign band carries the route breadcrumb |
+| Path identity | Paths compare case-insensitively on Windows and macOS (`pathKey`) | Both platforms' default file systems ignore case; case-sensitive macOS volumes are not supported |
 | Persistence | `localStorage` in the WebView: last root, expanded folders, theme, last-read position per file | No config files to manage |
 
 ## Behaviour
@@ -34,8 +35,9 @@ Editing or saving, sync, plugins, export, Linux builds, footnotes and KaTeX math
 2. The tree shows only `.md` / `.markdown` files. Folders with no Markdown below them are
    hidden. `.git`, `node_modules`, `target`, `dist`, `.venv` and similar are never scanned.
 3. Each top-level folder gets a line colour (the first colour is reserved for root-level files),
-   shown as a coloured symbol without a number. The line runs down the folder's left edge only;
-   files deeper down sit beside it, and the open file is joined to it by a horizontal branch and
+   shown as a coloured symbol without a number. Each depth has its own column, so root-level
+   files line up with the top-level folders and a folder's files sit one step in. The line drops
+   from the folder's symbol only; files sit beside it, and the open file is joined to it by a horizontal branch and
    drawn as the "transfer station". The Open folder button sits at the right end of the folder
    name row.
 4. The filter field narrows the tree by file name (case-insensitive), keeping parent folders.
@@ -62,7 +64,9 @@ Editing or saving, sync, plugins, export, Linux builds, footnotes and KaTeX math
     once the user picks it). Opening a file from Explorer or a terminal while the viewer runs
     hands it to the existing window (single instance) instead of starting a second one; Back
     returns to what was open before.
-13. macOS (Apple silicon, unsigned) is built with Windows by the `Release` GitHub Actions workflow. It
+13. A narrowing window hides the outline first (below 1100px), then the folder tree (below
+    720px); the document stays down to the 400px minimum width.
+14. macOS (Apple silicon, unsigned) is built with Windows by the `Release` GitHub Actions workflow. It
     uses the native window buttons over the title band, Finder's open-file event, `Cmd` for
     shortcuts and `Cmd+[` / `Cmd+]` for history; paths keep forward slashes.
 

@@ -107,7 +107,7 @@ components:
 
 **Creative North Star: "The Line Map"**
 
-md-viewer reads a repository the way a rider reads a metro map. Every top-level folder is a line with a number and a colour; every Markdown file is a station; the open file is the transfer station. The tree, the title-bar route and the outline speak this one language, so the reader always knows which line they are on, which stop they are at, and how much of the document is behind them.
+md-viewer reads a repository the way a rider reads a metro map. Every top-level folder is a line with a colour; every Markdown file is a station; the open file is the transfer station. The tree, the title-bar route and the outline speak this one language, so the reader always knows which line they are on, which stop they are at, and how much of the document is behind them.
 
 Around that map sits a calm reading column modelled on GitHub-style Markdown: a white ground, a 46rem measure, generous line height, and no decoration inside the text that the document did not ask for. The chrome is dense and quiet; the column is open and slow. The look refuses the category default of a grey editor explorer beside an anonymous preview.
 
@@ -166,7 +166,7 @@ A neutral, cool-grey world in which the only saturated colours are the transit l
 
 ## Layout
 
-A three-column window under a 42px sign band (ring logo, route breadcrumb, theme toggle, caption buttons): a resizable sidebar (284px default, 200px to 520px), a flexible document pane, and a 248px outline. The outline column disappears when a document has fewer than two outline stops and below 1100px window width. The document pane scrolls on its own with 44px top, 56px side and 120px bottom padding (32px / 28px / 96px below 900px); its content is a centred 46rem column. Tree rows are 29px tall and indent 16px per level, with each level's line guide drawn at its indent. Spacing follows the reading column's rem rhythm inside documents (paragraph gap 1.05rem, h2 top margin 2.7rem) and fixed pixels in the chrome.
+A three-column window under a 42px sign band (ring logo, route breadcrumb, theme toggle, caption buttons): a resizable sidebar (284px default, 200px to 520px), a flexible document pane, and a 248px outline. The outline column disappears when a document has fewer than two outline stops and below 1100px window width; below 720px the sidebar goes too, leaving the document alone (the window can narrow to 400px). The document pane scrolls on its own with 44px top, 56px side and 120px bottom padding (32px / 28px / 96px below 900px, 24px / 18px / 80px below 520px); its content is a centred 46rem column. Tree rows are 29px tall; each depth has its own symbol column, 18px apart, starting at x = 40px (the top-level symbol's centre), with names 12px after it. Spacing follows the reading column's rem rhythm inside documents (paragraph gap 1.05rem, h2 top margin 2.7rem) and fixed pixels in the chrome.
 
 ## Elevation & Depth
 
@@ -192,7 +192,7 @@ Gently rounded rectangles for controls and blocks (6px for buttons, inputs and t
 - **Filter:** 32px field on the reading ground with a 1px rule border, 6px radius, a 14px search icon; the border turns link blue on focus. Hidden until a folder is open.
 
 ### Navigation
-- **Line-map tree:** folders show a chevron, and at the top level a 12px line symbol. One 2px trunk runs down the left edge of each top-level folder; nested folders add no lines of their own. Files show a hollow station dot at their indent (on the trunk for the first level). The open file gets a horizontal branch from the trunk to its dot, a 13% line-colour wash, 620 weight and the white transfer ring. Filter matches are marked with a 28% line-colour highlight.
+- **Line-map tree:** top-level folders show a chevron and a 12px line symbol; nested folders show a chevron in their depth's column. One 2px trunk drops from each top-level folder's symbol; nested folders add no lines of their own. Files show a hollow station dot in their depth's column, so a folder's files sit one step right of root-level files, which share the top-level symbols' column and are joined only by their own line-1 segment between their dots. The open file gets a horizontal branch from the trunk to its dot, a 13% line-colour wash, 620 weight and the white transfer ring. Filter matches are marked with a 28% line-colour highlight.
 - **Route breadcrumb:** in the sign band, root dot, 30px line segments in the file's line colour, folder stops, and the current file as a white-centred ring on its line with its name in Sign Ink; long paths collapse to root, "…", and the last three stops.
 
 ### Outline route (signature)

@@ -49,6 +49,17 @@ describe("renderMarkdown", () => {
     expect(renderMarkdown("```\nplain\n```").html).not.toContain("diagram");
   });
 
+  it("never pulls markup into a cell next to a combining mark", () => {
+    const html = renderMarkdown("```python\nif\u3099 a < b:\n```").html;
+    expect(html).not.toMatch(/<span[^>]*<span|&lt<span/);
+    expect(html).toContain("&lt;");
+  });
+
+  it("keeps a joined emoji in one diagram cell", () => {
+    const html = renderMarkdown("```\n│👩‍💻│🚀│👍🏽│👩‍❤️‍👩│\n```").html;
+    expect(html).toContain('│<span class="w">👩‍💻</span>│<span class="w">🚀</span>│<span class="w">👍🏽</span>│<span class="w">👩‍❤️‍👩</span>│');
+  });
+
   it("leaves Mermaid source for the reader to draw", () => {
     const html = renderMarkdown("```mermaid\ngraph LR\n  A --> B\n```").html;
     expect(html).toContain('<pre data-lang="mermaid" class="mermaid-src"><code>graph LR\n  A --&gt; B\n</code></pre>');
