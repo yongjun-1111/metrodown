@@ -16,10 +16,24 @@ is running goes to the existing window. From a terminal: `md-viewer.exe path	oi
 
 ## macOS
 
-Run the **macOS build** workflow from the repository's Actions tab (or push a `v*` tag) and
-download the `md-viewer-macos` artifact. The app is unsigned: the first time, right-click
-md-viewer.app → Open, or allow it in System Settings → Privacy & Security. To make it the
-default for Markdown, Finder → a `.md` file → Get Info → Open with → md-viewer → Change All.
+Download the `.dmg` from the latest Release. The app is unsigned (Apple silicon only): the
+first time, right-click md-viewer.app → Open, or allow it in System Settings → Privacy &
+Security. To make it the default for Markdown, Finder → a `.md` file → Get Info → Open with →
+md-viewer → Change All.
+
+## Releases
+
+Each Release carries the Windows installer and the macOS `.dmg`, both built by the
+**Release** GitHub Actions workflow. To publish one, raise `version` in `package.json`,
+`src-tauri/tauri.conf.json` and `src-tauri/Cargo.toml`, commit, then tag and push:
+
+```powershell
+git tag v0.2.0
+git push origin v0.2.0
+```
+
+Running the workflow by hand from the Actions tab builds both without publishing; the files
+are attached to the run as artifacts.
 
 ## Build
 

@@ -62,7 +62,7 @@ Editing or saving, sync, plugins, export, Linux builds, footnotes and KaTeX math
     once the user picks it). Opening a file from Explorer or a terminal while the viewer runs
     hands it to the existing window (single instance) instead of starting a second one; Back
     returns to what was open before.
-13. macOS (Apple silicon, unsigned) is built by the `macOS build` GitHub Actions workflow. It
+13. macOS (Apple silicon, unsigned) is built with Windows by the `Release` GitHub Actions workflow. It
     uses the native window buttons over the title band, Finder's open-file event, `Cmd` for
     shortcuts and `Cmd+[` / `Cmd+]` for history; paths keep forward slashes.
 
