@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>md-viewer mockups</title>
+<style>
+:root{
+  --ui:"Segoe UI Variable Text","Segoe UI","Malgun Gothic",system-ui,sans-serif;
+  --mono:"Cascadia Code","Cascadia Mono",Consolas,"D2Coding",monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden}
+body{font-family:var(--ui);background:#101214;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.ic{display:block;flex:none}
+
+/* ---------- shared window ---------- */
+.win{height:100vh;display:grid;grid-template-rows:auto minmax(0,1fr);background:var(--bg);color:var(--ink)}
+.wc{display:flex;align-self:stretch;margin-left:auto}
+.wc button{width:46px;display:grid;place-items:center;color:inherit;opacity:.85}
+.wc button:hover{background:rgba(127,127,127,.18);opacity:1}
+.wc button.close:hover{background:#c42b1c;color:#fff}
+.doc-scroll{overflow:auto;min-height:0;scrollbar-width:thin;scrollbar-color:var(--rule-2,var(--rule)) transparent}
+.tree-scroll{overflow:auto;min-height:0;flex:1;scrollbar-width:thin;scrollbar-color:var(--rule-2,var(--rule)) transparent}
+::selection{background:var(--sel)}
+
+/* ---------- shared markdown body ---------- */
+.md{font:16px/1.72 var(--read,var(--ui));color:var(--ink);max-width:46rem;margin:0 auto}
+.md h1{font-size:2.05rem;line-height:1.22;font-weight:650;letter-spacing:-.015em;margin:0 0 .9rem;text-wrap:balance}
+.md h2{font-size:1.38rem;line-height:1.3;font-weight:630;margin:2.7rem 0 .85rem;padding-bottom:.4rem;border-bottom:1px solid var(--rule);text-wrap:balance}
+.md p{margin:0 0 1.05rem}
+.md .lead{font-size:1.12rem;line-height:1.65;color:var(--ink-2)}
+.md strong{font-weight:620}
+.md a{color:var(--link);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.md code{font:.86em/1.5 var(--mono);background:var(--code-bg);padding:.14em .42em;border-radius:5px}
+.md pre{position:relative;background:var(--code-bg);border:1px solid var(--rule);border-radius:8px;padding:16px 18px;overflow:auto;margin:0 0 1.3rem}
+.md pre code{background:none;padding:0;font-size:13.5px;line-height:1.65;color:var(--ink)}
+.md pre[data-lang]::after{content:attr(data-lang);position:absolute;top:8px;right:12px;font:12px var(--ui);color:var(--ink-3)}
+.md table{border-collapse:collapse;width:100%;margin:0 0 1.3rem;font-size:15px;font-variant-numeric:tabular-nums}
+.md th,.md td{border:1px solid var(--rule);padding:7px 13px;text-align:left;vertical-align:top}
+.md th{background:var(--th-bg);font-weight:620}
+.md tbody tr:nth-child(2n) td{background:var(--zebra)}
+.md td.num,.md th.num{text-align:right}
+.md ul,.md ol{padding-left:1.55em;margin:0 0 1.05rem}
+.md li{margin:.3rem 0}
+.md li::marker{color:var(--ink-3)}
+.md kbd{font:.8em/1 var(--mono);border:1px solid var(--rule);border-bottom-width:2px;border-radius:4px;padding:.18em .45em;background:var(--bg);color:var(--ink)}
+.md .tasks{list-style:none;padding-left:0}
+.md .tasks li{display:flex;gap:11px;align-items:flex-start}
+.md .cb{flex:none;width:16px;height:16px;margin-top:5px;border:1.5px solid var(--ink-3);border-radius:4px;display:grid;place-items:center;color:#fff}
+.md .done{color:var(--ink-2)}
+.md .done .cb{background:var(--cb,var(--link));border-color:var(--cb,var(--link))}
+.md .alert{display:flex;gap:12px;padding:13px 16px;border-radius:8px;margin:0 0 1.3rem;background:var(--note-bg);color:var(--ink)}
+.md .alert>.ic{margin-top:4px;color:var(--note-fg)}
+.md .alert p{margin:0}
+.md .alert .alert-title{font-weight:630;color:var(--note-fg);margin-bottom:2px}
+.md .alert.warning{--note-bg:var(--warn-bg);--note-fg:var(--warn-fg)}
+.md .related{font-size:14px;color:var(--ink-2);margin-top:2.2rem}
+.t-k{color:#cf222e}.t-s{color:#0a3069}.t-c{color:#6e7781;font-style:italic}.t-f{color:#8250df}.t-t{color:#953800}.t-attr{color:#116329}
+[data-theme=dark] .t-k{color:#ff7b72}[data-theme=dark] .t-s{color:#a5d6ff}[data-theme=dark] .t-c{color:#8b949e}[data-theme=dark] .t-f{color:#d2a8ff}[data-theme=dark] .t-t{color:#ffa657}[data-theme=dark] .t-attr{color:#7ee787}
+
+/* =========================================================
+   A. LINE MAP
+   ========================================================= */
+.v-metro{--bg:#fff;--panel:#f3f5f8;--sign:#172030;--sign-ink:#f3f5f9;--sign-ink2:#9eabc0;--ink:#1c222b;--ink-2:#4f5a68;--ink-3:#7c8695;--rule:#dfe4ea;--rule-2:#c3cad4;--code-bg:#f4f6f9;--th-bg:#eef1f5;--zebra:#fafbfc;--link:#0a5bd3;--sel:rgba(0,82,164,.18);--hover:#e7ebf1;--input:#fff;--note-bg:#edf3fd;--note-fg:#0a5bd3;--warn-bg:#fdf4e1;--warn-fg:#8a5800}
+[data-theme=dark] .v-metro{--bg:#0e1217;--panel:#141920;--sign:#080b0f;--sign-ink:#e9edf3;--sign-ink2:#8592a6;--ink:#e3e7ed;--ink-2:#a9b2bf;--ink-3:#7f8998;--rule:#262d37;--rule-2:#3a4350;--code-bg:#151a21;--th-bg:#171d25;--zebra:#11161c;--link:#6aa8ff;--sel:rgba(76,141,255,.3);--hover:#1b222b;--input:#0e1217;--note-bg:#13213a;--note-fg:#7db2ff;--warn-bg:#2a2112;--warn-fg:#e6b450}
+.v-metro .titlebar{height:42px;display:flex;align-items:center;background:var(--sign);color:var(--sign-ink);padding-left:14px;gap:20px;user-select:none}
+.v-metro .brand{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:600;letter-spacing:.01em}
+.v-metro .brand .logo{width:16px;height:16px;border-radius:50%;border:3.5px solid var(--sign-ink);position:relative}
+.v-metro .route{display:flex;align-items:center;font-size:13px;color:var(--sign-ink2);min-width:0}
+.v-metro .rs{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.v-metro .rs i{width:10px;height:10px;border-radius:50%;border:2px solid var(--lc);background:var(--sign)}
+.v-metro .rs.cur{color:var(--sign-ink);font-weight:600}
+.v-metro .rs.cur i{width:13px;height:13px;border-width:3.5px;background:#fff}
+.v-metro .seg{width:30px;height:3px;border-radius:2px;background:var(--lc);margin:0 8px}
+.v-metro .tb-btn{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--sign-ink2);padding:6px 10px;border-radius:6px;margin-left:auto}
+.v-metro .tb-btn:hover{background:rgba(255,255,255,.08);color:var(--sign-ink)}
+.v-metro .tb-btn+.wc{margin-left:6px}
+.v-metro .body{display:grid;grid-template-columns:284px minmax(0,1fr) 248px;min-height:0}
+.v-metro .side{background:var(--panel);border-right:1px solid var(--rule);display:flex;flex-direction:column;min-height:0}
+.v-metro .side-head{padding:16px 14px 10px}
+.v-metro .root-name{font-size:14px;font-weight:650;display:flex;align-items:center;gap:8px}
+.v-metro .root-path{font-size:12px;color:var(--ink-3);margin-top:2px}
+.v-metro .filter{margin-top:12px;display:flex;align-items:center;gap:8px;height:32px;padding:0 10px;border-radius:6px;background:var(--input);border:1px solid var(--rule);color:var(--ink-3);font-size:13px}
+.v-metro .tree{padding:4px 0 16px}
+.v-metro .row{position:relative;height:29px;display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--ink);cursor:default;white-space:nowrap;padding-right:12px}
+.v-metro .row:hover{background:var(--hover)}
+.v-metro .row .g{position:absolute;top:0;bottom:0;width:2px;background:var(--lc)}
+.v-metro .row.dir{font-weight:600;color:var(--ink)}
+.v-metro .chev{width:16px;display:grid;place-items:center;color:var(--ink-3);transition:transform .15s}
+.v-metro .row.open .chev{transform:rotate(90deg)}
+.v-metro .badge{width:18px;height:18px;border-radius:50%;background:var(--lc);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;font-variant-numeric:tabular-nums}
+.v-metro .stop{position:absolute;top:50%;width:10px;height:10px;border-radius:50%;background:var(--panel);border:2px solid var(--lc);transform:translate(-50%,-50%)}
+.v-metro .row.file.active{background:color-mix(in srgb,var(--lc) 13%,transparent);font-weight:620}
+.v-metro .row.file.active .stop{width:15px;height:15px;border-width:3.5px;background:#fff}
+.v-metro .side-foot{border-top:1px solid var(--rule);padding:10px 14px;font-size:12px;color:var(--ink-3);display:flex;gap:14px}
+.v-metro .main{position:relative;display:grid;min-height:0}
+.v-metro .progress{position:absolute;z-index:2;top:0;left:0;height:3px;width:calc(var(--p,0)*100%);background:var(--lc-doc);transition:width .12s linear}
+.v-metro .doc-scroll{padding:44px 56px 140px}
+.v-metro .md{--cb:var(--lc-doc)}
+.v-metro .sign{max-width:46rem;margin:0 auto 18px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-2);flex-wrap:wrap}
+.v-metro .sign .badge{--lc:var(--lc-doc)}
+[data-theme=dark] .v-metro .badge{color:#0a0d11}
+.v-metro .sign .line{font-weight:620;color:var(--ink)}
+.v-metro .sign .dot{width:3px;height:3px;border-radius:50%;background:var(--ink-3)}
+.v-metro .sign .state{color:var(--lc-doc);font-weight:620}
+.v-metro .outline{border-left:1px solid var(--rule);padding:30px 18px 24px 20px;overflow:auto}
+.v-metro .ol-head{font-size:12px;font-weight:620;color:var(--ink-3);margin:0 0 12px}
+.v-metro .rtoc{list-style:none;margin:0;padding:0}
+.v-metro .rtoc li{position:relative;padding:5px 0 5px 26px;font-size:13.5px;line-height:1.35;color:var(--ink-2)}
+.v-metro .rtoc li::before{content:"";position:absolute;left:7px;top:0;bottom:0;width:2px;background:repeating-linear-gradient(to bottom,var(--rule-2) 0 4px,transparent 4px 8px)}
+.v-metro .rtoc li::after{content:"";position:absolute;left:3px;top:9px;width:10px;height:10px;border-radius:50%;background:var(--bg);border:2px solid var(--rule-2)}
+.v-metro .rtoc li:first-child::before{top:14px}
+.v-metro .rtoc li:last-child::before{bottom:auto;height:14px}
+.v-metro .rtoc li.done::before,.v-metro .rtoc li.cur::before{background:var(--lc-doc)}
+.v-metro .rtoc li.cur::before{background:linear-gradient(to bottom,var(--lc-doc) 0 14px,transparent 14px),repeating-linear-gradient(to bottom,var(--rule-2) 0 4px,transparent 4px 8px)}
+.v-metro .rtoc li.done::after{background:var(--lc-doc);border-color:var(--lc-doc)}
+.v-metro .rtoc li.cur::after{left:1px;top:7px;width:14px;height:14px;border:3.5px solid var(--lc-doc);background:#fff}
+.v-metro .rtoc li.cur{color:var(--ink);font-weight:620}
+.v-metro .rtoc a{color:inherit;text-decoration:none;cursor:pointer}
+.v-metro .rtoc a:hover{color:var(--ink)}
+.v-metro .flag{display:flex;align-items:center;gap:5px;margin-top:3px;font-size:11.5px;font-weight:400;color:var(--ink-3)}
+
+/* =========================================================
+   B. REVIEW BINDER
+   ========================================================= */
+.v-binder{--bg:#fff;--desk:#d9dfe7;--panel:#eef1f5;--sheet:#fff;--ink:#1d2229;--ink-2:#4e5866;--ink-3:#77818f;--rule:#e1e5ea;--rule-2:#c6cdd6;--code-bg:#f5f6f8;--th-bg:#f0f2f5;--zebra:#fafbfc;--link:#1f5fbf;--hover:#e2e7ee;--stamp:#c23a2b;--title:#e7ebf0;--sel:rgba(31,95,191,.18);--note-bg:#eef3fb;--note-fg:#1f5fbf;--warn-bg:#fbf3e3;--warn-fg:#865500}
+[data-theme=dark] .v-binder{--bg:#181d24;--desk:#0b0e12;--panel:#12161c;--sheet:#181d24;--ink:#e4e7ec;--ink-2:#a6afbb;--ink-3:#7a8390;--rule:#29303a;--rule-2:#3a424d;--code-bg:#12161c;--th-bg:#1e242c;--zebra:#161b21;--link:#7fb0ff;--hover:#1a2028;--stamp:#ff7a66;--title:#12161c;--sel:rgba(127,176,255,.28);--note-bg:#16233a;--note-fg:#86b6ff;--warn-bg:#2b2213;--warn-fg:#e9b44c}
+.v-binder .titlebar{height:36px;display:flex;align-items:center;gap:10px;padding-left:12px;background:var(--title);color:var(--ink);font-size:12.5px;user-select:none;border-bottom:1px solid var(--rule)}
+.v-binder .titlebar .appic{width:16px;height:16px;border-radius:4px;background:var(--ink);display:grid;place-items:center}
+.v-binder .titlebar .appic::after{content:"";width:8px;height:2px;background:var(--title);box-shadow:0 3px 0 var(--title),0 -3px 0 var(--title)}
+.v-binder .titlebar .tt{color:var(--ink-2)}
+.v-binder .titlebar .tt b{color:var(--ink);font-weight:600}
+.v-binder .body{display:grid;grid-template-columns:272px minmax(0,1fr);min-height:0}
+.v-binder .side{background:var(--panel);border-right:1px solid var(--rule);display:flex;flex-direction:column;min-height:0}
+.v-binder .side-head{padding:18px 16px 12px}
+.v-binder .root-name{font-size:15px;font-weight:650}
+.v-binder .root-path{font-size:12px;color:var(--ink-3);margin-top:2px}
+.v-binder .filter{margin-top:12px;display:flex;align-items:center;gap:8px;height:32px;padding:0 10px;border-radius:6px;background:var(--sheet);border:1px solid var(--rule);color:var(--ink-3);font-size:13px}
+.v-binder .tree{padding:2px 8px 16px}
+.v-binder .row{height:30px;display:flex;align-items:center;gap:7px;font-size:13.5px;border-radius:6px;padding-right:8px;white-space:nowrap;cursor:default;color:var(--ink)}
+.v-binder .row:hover{background:var(--hover)}
+.v-binder .row .ic{color:var(--ink-3)}
+.v-binder .row.divider{margin-top:12px;font-weight:650;font-size:13px;color:var(--ink)}
+.v-binder .row.divider .count{margin-left:auto;font-weight:400;font-size:12px;color:var(--ink-3)}
+.v-binder .tabchip{width:7px;height:16px;border-radius:2px 4px 4px 2px;background:var(--tc)}
+.v-binder .chev{width:14px;display:grid;place-items:center;color:var(--ink-3);transition:transform .15s}
+.v-binder .row.open .chev{transform:rotate(90deg)}
+.v-binder .row.file.active{background:var(--sheet);font-weight:620;box-shadow:0 1px 2px rgba(15,25,40,.08),0 2px 8px -2px rgba(15,25,40,.12)}
+.v-binder .row.file.active .ic{color:var(--ink)}
+.v-binder .desk{background:var(--desk);padding:0 64px 140px 40px}
+.v-binder .runhead{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:8px;padding:14px 0 12px;background:var(--desk);font-size:13px;color:var(--ink-2);max-width:calc(50rem + 172px)}
+.v-binder .runhead i{font-style:normal;color:var(--ink-3)}
+.v-binder .runhead b{color:var(--ink);font-weight:620}
+.v-binder .runhead .rh-r{margin-left:auto;color:var(--ink-3);padding-right:172px}
+.v-binder .sheetwrap{display:grid;grid-template-columns:minmax(0,50rem) 172px;align-items:start}
+.v-binder .sheet{position:relative;z-index:1;background:var(--sheet);border-radius:4px;padding:52px 64px 72px;box-shadow:0 1px 2px rgba(15,25,40,.06),0 12px 32px -12px rgba(15,25,40,.22)}
+[data-theme=dark] .v-binder .sheet{box-shadow:0 0 0 1px #232a33,0 16px 40px -12px rgba(0,0,0,.6)}
+.v-binder .md{max-width:none}
+.v-binder .slip{display:grid;grid-template-columns:1.1fr 1.4fr 1.1fr 1.2fr;border:1px solid var(--rule-2);border-radius:6px;margin-bottom:38px}
+.v-binder .slip>div{padding:10px 14px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.v-binder .slip>div+div{border-left:1px solid var(--rule-2)}
+.v-binder .slip .k{font-size:11.5px;color:var(--ink-3)}
+.v-binder .slip .v{font-size:14px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v-binder .stamp{align-self:flex-start;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--stamp);border:1.5px solid var(--stamp);border-radius:3px;padding:1px 7px;transform:rotate(-3deg);margin-top:1px}
+.v-binder .tabs{position:sticky;top:58px;z-index:0;display:flex;flex-direction:column;gap:5px;padding-top:44px}
+.v-binder .tab{height:34px;width:172px;display:flex;align-items:center;gap:7px;padding:0 10px 0 24px;border-radius:0 7px 7px 0;background:color-mix(in srgb,var(--tc) 26%,var(--desk));color:var(--ink);font-size:12.5px;text-align:left;transform:translateX(-12px);transition:transform .18s cubic-bezier(.2,.8,.2,1),background .18s}
+.v-binder .tab span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v-binder .tab:hover{transform:translateX(-5px)}
+.v-binder .tab.cur{transform:none;background:var(--sheet);font-weight:620;box-shadow:3px 2px 6px -2px rgba(15,25,40,.18)}
+.v-binder .tab.cur::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--tc)}
+
+/* =========================================================
+   C. VS CODE STANDARD
+   ========================================================= */
+.v-code{--tb:#f8f8f8;--act:#f8f8f8;--side:#f8f8f8;--ed:#fff;--bd:#e5e5e5;--fg:#3b3b3b;--fg2:#616161;--acc:#005fb8;--lsel:#e4e6f1;--hov:#f0f0f0;--bg:#fff;--ink:#1f2328;--ink-2:#59636e;--ink-3:#818b98;--rule:#d1d9e0;--code-bg:#f6f8fa;--th-bg:#f6f8fa;--zebra:#f6f8fa;--link:#0969da;--sel:rgba(9,105,218,.2);--note-bg:#ddf4ff;--note-fg:#0969da;--warn-bg:#fff8c5;--warn-fg:#9a6700;grid-template-rows:auto minmax(0,1fr) auto}
+[data-theme=dark] .v-code{--tb:#181818;--act:#181818;--side:#181818;--ed:#1f1f1f;--bd:#2b2b2b;--fg:#cccccc;--fg2:#9d9d9d;--acc:#0078d4;--lsel:#37373d;--hov:#2a2d2e;--bg:#0d1117;--ink:#e6edf3;--ink-2:#9198a1;--ink-3:#7d8590;--rule:#3d444d;--code-bg:#151b23;--th-bg:#151b23;--zebra:#151b23;--link:#4493f8;--sel:rgba(68,147,248,.3);--note-bg:#121d2f;--note-fg:#4493f8;--warn-bg:#272115;--warn-fg:#d29922}
+.v-code{color:var(--fg)}
+.v-code .titlebar{height:35px;display:flex;align-items:center;gap:6px;background:var(--tb);border-bottom:1px solid var(--bd);padding-left:10px;font-size:13px;user-select:none}
+.v-code .menu{display:flex;gap:2px}
+.v-code .menu span{padding:3px 8px;border-radius:4px}
+.v-code .menu span:hover{background:var(--hov)}
+.v-code .cc{position:absolute;left:50%;transform:translateX(-50%);width:min(38%,520px);height:24px;border:1px solid var(--bd);border-radius:6px;background:color-mix(in srgb,var(--tb) 70%,var(--ed));display:flex;align-items:center;justify-content:center;gap:6px;color:var(--fg2);font-size:12.5px}
+.v-code .body{display:grid;grid-template-columns:48px 256px minmax(0,1fr);min-height:0}
+.v-code .activity{background:var(--act);border-right:1px solid var(--bd);display:flex;flex-direction:column;align-items:center;padding-top:4px}
+.v-code .activity button{position:relative;width:48px;height:48px;display:grid;place-items:center;color:var(--fg2)}
+.v-code .activity button.on{color:var(--fg)}
+.v-code .activity button.on::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--acc)}
+.v-code .side{background:var(--side);border-right:1px solid var(--bd);display:flex;flex-direction:column;min-height:0;font-size:13px}
+.v-code .sh{height:35px;display:flex;align-items:center;padding:0 20px;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--fg2)}
+.v-code .sec{height:22px;display:flex;align-items:center;gap:2px;padding-left:2px;font-size:11px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:var(--fg)}
+.v-code .sec .ic{transform:rotate(90deg)}
+.v-code .sec.closed{border-top:1px solid var(--bd);margin-top:auto}
+.v-code .sec.closed .ic{transform:none}
+.v-code .row{position:relative;height:22px;display:flex;align-items:center;gap:5px;white-space:nowrap;cursor:default;color:var(--fg)}
+.v-code .row:hover{background:var(--hov)}
+.v-code .row .g{position:absolute;top:0;bottom:0;width:1px;background:color-mix(in srgb,var(--fg2) 30%,transparent)}
+.v-code .row .chev{width:16px;display:grid;place-items:center;color:var(--fg);transition:transform .1s}
+.v-code .row.open .chev{transform:rotate(90deg)}
+.v-code .row .mdi{color:#519aba}
+.v-code .row.active{background:var(--lsel)}
+[data-theme=dark] .v-code .row.active{background:#04395e;outline:1px solid #0078d4;outline-offset:-1px}
+.v-code .editor{display:grid;grid-template-rows:35px 22px minmax(0,1fr);min-height:0;background:var(--ed)}
+.v-code .tabsbar{display:flex;background:var(--tb);border-bottom:1px solid var(--bd)}
+.v-code .etab{display:flex;align-items:center;gap:6px;padding:0 10px 0 12px;font-size:13px;color:var(--fg2);border-right:1px solid var(--bd);position:relative}
+.v-code .etab.on{background:var(--ed);color:var(--fg);margin-bottom:-1px}
+.v-code .etab.on::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--acc)}
+.v-code .etab .x{opacity:.8;margin-left:6px}
+.v-code .etab .mdi{color:#519aba}
+.v-code .crumbs{display:flex;align-items:center;gap:4px;padding:0 14px;font-size:12.5px;color:var(--fg2)}
+.v-code .pv{display:grid;grid-template-columns:minmax(0,1fr) 236px;min-height:0;background:var(--bg)}
+.v-code .doc-scroll{padding:36px 48px 140px}
+.v-code .md{font-size:16px;line-height:1.6;max-width:980px}
+.v-code .md h1{font-weight:600;border-bottom:1px solid var(--rule);padding-bottom:.3em}
+.v-code .md h2{font-weight:600}
+.v-code .md .alert{border-radius:6px}
+.v-code .fm{margin-bottom:1.6rem}
+.v-code .mpe-toc{border-left:1px solid var(--rule);padding:20px 16px;overflow:auto;font-size:13.5px;background:color-mix(in srgb,var(--bg) 94%,var(--ink))}
+.v-code .mpe-toc .h{font-weight:600;color:var(--ink);margin-bottom:8px}
+.v-code .mpe-toc a{display:block;padding:4px 8px;border-radius:4px;color:var(--ink-2);text-decoration:none;cursor:pointer}
+.v-code .mpe-toc a:hover{color:var(--link)}
+.v-code .mpe-toc a.cur{color:var(--ink);font-weight:600;background:color-mix(in srgb,var(--link) 10%,transparent)}
+.v-code .status{height:22px;display:flex;align-items:center;gap:16px;padding:0 10px;font-size:12px;background:var(--tb);color:var(--fg2);border-top:1px solid var(--bd)}
+.v-code .status span{display:flex;align-items:center;gap:5px}
+.v-code .status .r{margin-left:auto}
+
+/* ---------- narrow widths ---------- */
+@media (max-width:1180px){
+  .v-metro .body{grid-template-columns:260px minmax(0,1fr)}.v-metro .outline{display:none}
+  .v-binder .sheetwrap{grid-template-columns:minmax(0,1fr)}.v-binder .tabs{display:none}.v-binder .runhead .rh-r{padding-right:0}
+  .v-code .pv{grid-template-columns:minmax(0,1fr)}.v-code .mpe-toc{display:none}
+}
+@media (max-width:820px){
+  .v-metro .body,.v-binder .body{grid-template-columns:minmax(0,1fr)}.v-metro .side,.v-binder .side{display:none}
+  .v-code .body{grid-template-columns:48px minmax(0,1fr)}.v-code .side{display:none}
+  .v-metro .route .rs:not(.cur),.v-metro .route .seg{display:none}
+  .v-metro .doc-scroll,.v-code .doc-scroll{padding:28px 20px 160px}
+  .v-binder .desk{padding:0 12px 160px}.v-binder .sheet{padding:28px 20px 48px}.v-binder .slip{grid-template-columns:1fr 1fr}
+  .v-binder .slip>div:nth-child(3){border-left:0;border-top:1px solid var(--rule-2)}.v-binder .slip>div:nth-child(4){border-top:1px solid var(--rule-2)}
+}
+
+/* ---------- mockup switcher (not part of the design) ---------- */
+.mock-switch{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:50;width:min(720px,calc(100vw - 32px));background:rgba(18,20,24,.92);backdrop-filter:blur(10px);color:#eef0f3;border-radius:14px;padding:10px 10px 10px 14px;box-shadow:0 10px 30px rgba(0,0,0,.35);font-family:var(--ui)}
+.mock-switch .cap{margin:0 4px 9px;font-size:13px;line-height:1.5;color:#c9ced6}
+.mock-switch .cap b{color:#fff}
+.mock-switch .btns{display:flex;gap:6px;flex-wrap:wrap}
+.mock-switch button{height:32px;padding:0 12px;border-radius:8px;font-size:13px;color:#c9ced6;display:flex;align-items:center;gap:7px}
+.mock-switch button:hover{background:rgba(255,255,255,.08);color:#fff}
+.mock-switch button[aria-pressed=true]{background:#fff;color:#111;font-weight:600}
+.mock-switch .sp{flex:1}
+.mock-switch.min .cap{display:none}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="mock-switch" role="toolbar" aria-label="Mockup switcher">
+  <p class="cap" id="cap"></p>
+  <div class="btns">
+    <button data-v="metro">A · 노선도</button>
+    <button data-v="binder">B · 검토 바인더</button>
+    <button data-v="code">C · VS Code 표준</button>
+    <span class="sp"></span>
+    <button data-act="theme" id="themeBtn"></button>
+    <button data-act="min" title="설명 숨기기 (H)">설명</button>
+  </div>
+</div>
+<script>
+(function(){
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let variant=store.get('mdv.variant')||'metro';
+let theme=store.get('mdv.theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+const hp=new URLSearchParams(location.hash.slice(1));
+if(['metro','binder','code'].includes(hp.get('v')))variant=hp.get('v');
+if(['light','dark'].includes(hp.get('t')))theme=hp.get('t');
+
+const P={
+ chevron:'<path d="m9 18 6-6-6-6"/>',
+ folder:'<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>',
+ folderOpen:'<path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/>',
+ fileText:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+ search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+ sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+ moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+ files:'<path d="M20 7h-3a2 2 0 0 1-2-2V2"/><path d="M9 18a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h7l4 4v10a2 2 0 0 1-2 2Z"/><path d="M3 7.6v12.8A1.6 1.6 0 0 0 4.6 22h9.8"/>',
+ listTree:'<path d="M21 12h-8"/><path d="M21 6H8"/><path d="M21 18h-8"/><path d="M3 6v4c0 1.1.9 2 2 2h3"/><path d="M3 10v6c0 1.1.9 2 2 2h3"/>',
+ bookmark:'<path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>',
+ info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+ alert:'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+ check:'<path d="M20 6 9 17l-5-5"/>',
+ eye:'<path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"/><circle cx="12" cy="12" r="3"/>',
+ branch:'<line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>',
+ x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+ lock:'<rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+ md:'<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 15V9l2.5 3L11 9v6"/><path d="M16.5 9v6m-2.2-2.2 2.2 2.2 2.2-2.2"/>'
+};
+const svg=(n,s=16,sw=1.75)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n]}</svg>`;
+const wc=()=>`<div class="wc"><button aria-label="Minimize"><svg width="10" height="10" viewBox="0 0 10 10" stroke="currentColor" fill="none"><path d="M0 5.5h10"/></svg></button><button aria-label="Maximize"><svg width="10" height="10" viewBox="0 0 10 10" stroke="currentColor" fill="none"><rect x=".5" y=".5" width="9" height="9" rx="1"/></svg></button><button class="close" aria-label="Close"><svg width="10" height="10" viewBox="0 0 10 10" stroke="currentColor" fill="none"><path d="M.5.5l9 9M9.5.5l-9 9"/></svg></button></div>`;
+
+const TREE=[
+ {name:'.claude',dir:true,open:false,children:[{name:'commands',dir:true,open:false,children:[{name:'review.md'}]}]},
+ {name:'docs',dir:true,open:true,children:[
+   {name:'adr',dir:true,open:true,children:[{name:'0001-use-tauri.md'},{name:'0002-render-in-webview.md'}]},
+   {name:'design-notes.md'},{name:'spec.md',active:true}]},
+ {name:'tickets',dir:true,open:true,children:[{name:'001-folder-tree.md'},{name:'002-render-pipeline.md'},{name:'003-outline-panel.md'}]},
+ {name:'AGENTS.md'},{name:'CLAUDE.md'},{name:'PRODUCT.md'},{name:'README.md'}
+];
+let uid=0;(function tag(ns){ns.forEach(n=>{n.id=uid++;if(n.children)tag(n.children)})})(TREE);
+const byId=id=>{let f=null;(function s(ns){ns.forEach(n=>{if(n.id==id)f=n;if(n.children)s(n.children)})})(TREE);return f};
+const countMd=n=>n.dir?n.children.reduce((a,c)=>a+countMd(c),0):1;
+function rows(ns=TREE,d=0,top=null,out=[]){for(const n of ns){const t=top||(n.dir?n.name:'root');out.push({n,d,top:t});if(n.dir&&n.open)rows(n.children,d+1,t,out)}return out}
+
+const TOC=[['overview','Overview'],['goals','Goals and non-goals'],['pipeline','Rendering pipeline'],['syntax','Supported syntax'],['tree','File tree behaviour'],['perf','Performance budget'],['acceptance','Acceptance'],['questions','Open questions']];
+
+const DOC=`
+<h1>md-viewer specification</h1>
+<p class="lead">md-viewer is a read-only Markdown viewer for Windows. It opens a folder, lists the Markdown files in a tree, and renders the selected file with the readability of VS Code's Markdown Preview Enhanced. It never writes to disk.</p>
+
+<h2 id="overview">Overview</h2>
+<p>The person using this app reviews documents written by coding agents: specs, tickets, decision records and reports. Most of them sit in <code>docs/</code> and <code>tickets/</code> folders inside git repositories, next to source code. The tree hides everything that is not Markdown, so a repository with two thousand files still shows a short, readable list.</p>
+<div class="alert note">${svg('info',18)}<div><p class="alert-title">Note</p><p>Editing is out of scope. When a document needs changes, the agent that owns it makes them; the viewer reloads the file when it changes on disk.</p></div></div>
+
+<h2 id="goals">Goals and non-goals</h2>
+<ul>
+<li><strong>Start in under 300&nbsp;ms</strong> from a cold launch on a Windows 11 laptop.</li>
+<li>Switch between files without a visible delay, and keep the scroll position of every file opened in a session.</li>
+<li>Match the reading comfort of Markdown Preview Enhanced's GitHub theme: measure, spacing, code and tables.</li>
+<li>Non-goals: editing, sync, plugins, export to PDF or HTML.</li>
+</ul>
+
+<h2 id="pipeline">Rendering pipeline</h2>
+<p>The Rust side reads the file and hands its text to the WebView, which renders it with <code>markdown-it</code>, the parser family Markdown Preview Enhanced uses. Keeping rendering in the frontend means plugins for task lists, footnotes and alerts work unchanged.</p>
+<pre data-lang="rust"><code><span class="t-attr">#[tauri::command]</span>
+<span class="t-k">fn</span> <span class="t-f">read_markdown</span>(path: <span class="t-t">String</span>) -&gt; <span class="t-t">Result</span>&lt;<span class="t-t">String</span>, <span class="t-t">String</span>&gt; {
+    <span class="t-c">// Read-only: the viewer never writes to disk.</span>
+    <span class="t-k">let</span> bytes = std::fs::<span class="t-f">read</span>(&amp;path).<span class="t-f">map_err</span>(|e| e.<span class="t-f">to_string</span>())?;
+    <span class="t-t">Ok</span>(<span class="t-t">String</span>::<span class="t-f">from_utf8_lossy</span>(&amp;bytes).<span class="t-f">into_owned</span>())
+}</code></pre>
+<p>File reads are the only filesystem access the frontend can request. There is no command that writes, renames or deletes.</p>
+
+<h2 id="syntax">Supported syntax</h2>
+<table><thead><tr><th>Feature</th><th>Source</th><th>Status</th></tr></thead><tbody>
+<tr><td>Headings, lists, emphasis, links</td><td>CommonMark</td><td>Ready</td></tr>
+<tr><td>Tables, task lists, strikethrough</td><td>GitHub Flavored Markdown</td><td>Ready</td></tr>
+<tr><td>Alerts (<code>&gt; [!NOTE]</code>)</td><td>GitHub</td><td>Ready</td></tr>
+<tr><td>Front matter (YAML)</td><td>Markdown Preview Enhanced</td><td>Ready</td></tr>
+<tr><td>Code highlighting</td><td>highlight.js</td><td>Ready</td></tr>
+<tr><td>Mermaid diagrams</td><td>Markdown Preview Enhanced</td><td>Planned</td></tr>
+<tr><td>Math (KaTeX)</td><td>Markdown Preview Enhanced</td><td>Undecided</td></tr>
+</tbody></table>
+
+<h2 id="tree">File tree behaviour</h2>
+<ol>
+<li>Open a folder with <kbd>Ctrl</kbd> + <kbd>O</kbd>, or drop it onto the window.</li>
+<li>Folders that contain no Markdown files, directly or below, are hidden.</li>
+<li>Expanded folders and the last opened file are remembered per root folder.</li>
+<li>Links between documents open in the same window; <kbd>Alt</kbd> + <kbd>←</kbd> goes back.</li>
+</ol>
+
+<h2 id="perf">Performance budget</h2>
+<table><thead><tr><th>Metric</th><th class="num">Budget</th><th>Notes</th></tr></thead><tbody>
+<tr><td>Cold start to first paint</td><td class="num">300 ms</td><td>Release build, SSD</td></tr>
+<tr><td>Open a 1 MB file</td><td class="num">120 ms</td><td>Includes highlighting</td></tr>
+<tr><td>Index a 5,000-file folder</td><td class="num">400 ms</td><td>Runs off the UI thread</td></tr>
+<tr><td>Installer size</td><td class="num">8 MB</td><td>WebView2 ships with Windows 11</td></tr>
+<tr><td>Idle memory</td><td class="num">90 MB</td><td>Mostly WebView2</td></tr>
+</tbody></table>
+
+<h2 id="acceptance">Acceptance</h2>
+<ul class="tasks">
+<li class="done"><span class="cb">${svg('check',12,3)}</span><span>Opens a folder and lists only Markdown files</span></li>
+<li class="done"><span class="cb">${svg('check',12,3)}</span><span>Renders tables, task lists, alerts and highlighted code</span></li>
+<li class="done"><span class="cb">${svg('check',12,3)}</span><span>Shows a contents list for the open document and tracks the current section</span></li>
+<li><span class="cb"></span><span>Reloads the open file when it changes on disk</span></li>
+<li><span class="cb"></span><span>Remembers the scroll position of each file within a session</span></li>
+</ul>
+
+<h2 id="questions">Open questions</h2>
+<p>Should Mermaid diagrams render on first open, or only when they scroll into view? Rendering lazily keeps large documents fast, but makes the first pass through a diagram-heavy file less smooth.</p>
+<div class="alert warning">${svg('alert',18)}<div><p class="alert-title">Decision needed</p><p>Whether to register md-viewer as the default app for <code>.md</code> files. It is convenient, but it replaces whatever the user has set today.</p></div></div>
+<p class="related">Related: <a>docs/adr/0001-use-tauri.md</a> · <a>tickets/002-render-pipeline.md</a></p>
+`;
+
+/* ---------------- A. Line map ---------------- */
+const LINES={root:{n:1,l:'#0052A4',d:'#4c8dff'},docs:{n:2,l:'#00A84D',d:'#35c776'},tickets:{n:3,l:'#EF7C1C',d:'#ff9a45'},'.claude':{n:5,l:'#996CAC',d:'#c29cd6'}};
+const lc=t=>theme==='dark'?LINES[t].d:LINES[t].l;
+function metroRow({n,d,top}){
+  const c=lc(top);let g='';
+  const guides=n.dir?d:Math.max(d,1);
+  for(let k=0;k<guides;k++)g+=`<span class="g" style="left:${12+k*16+7}px"></span>`;
+  if(n.dir){
+    const badge=d===0?`<span class="badge">${LINES[top].n}</span>`:'';
+    return `<div class="row dir ${n.open?'open':''}" data-id="${n.id}" style="--lc:${c};padding-left:${12+d*16}px">${g}<span class="chev">${svg('chevron',14,2)}</span>${badge}<span>${n.name}</span></div>`;
+  }
+  const x=12+Math.max(d-1,0)*16+8;
+  return `<div class="row file ${n.active?'active':''}" data-id="${n.id}" style="--lc:${c};padding-left:${12+Math.max(d,1)*16+6}px">${g}<span class="stop" style="left:${x}px"></span><span>${n.name.replace(/\.md$/,'')}</span></div>`;
+}
+function renderMetro(){
+  const doc=lc('docs');
+  return `<div class="win v-metro" style="--lc-doc:${doc}">
+  <header class="titlebar">
+    <div class="brand"><span class="logo"></span>md-viewer</div>
+    <nav class="route" aria-label="Path">
+      <span class="rs" style="--lc:${lc('root')}"><i></i>md-viewer</span><span class="seg" style="--lc:${doc}"></span>
+      <span class="rs" style="--lc:${doc}"><i></i>docs</span><span class="seg" style="--lc:${doc}"></span>
+      <span class="rs cur" style="--lc:${doc}"><i></i>spec</span>
+    </nav>
+    <button class="tb-btn">${svg('folderOpen',15)}Open folder</button>${wc()}
+  </header>
+  <div class="body">
+    <aside class="side">
+      <div class="side-head">
+        <div class="root-name">md-viewer</div>
+        <div class="root-path">D:\\repos\\md-viewer</div>
+        <div class="filter">${svg('search',14)}Filter files</div>
+      </div>
+      <div class="tree-scroll"><nav class="tree">${rows().map(metroRow).join('')}</nav></div>
+      <div class="side-foot"><span>12 documents</span><span>Other files hidden</span></div>
+    </aside>
+    <div class="main"><div class="progress"></div>
+      <main class="doc-scroll">
+        <div class="sign"><span class="badge">2</span><span class="line">docs</span><span class="dot"></span><span class="state">Draft</span><span class="dot"></span><span>Updated 10 Oct 2026</span><span class="dot"></span><span>6 min read</span></div>
+        <article class="md">${DOC}</article>
+      </main>
+    </div>
+    <aside class="outline">
+      <p class="ol-head">On this page</p>
+      <ol class="rtoc">${TOC.map((t,i)=>`<li data-toc data-i="${i}"><a data-go="${t[0]}">${t[1]}</a>${t[0]==='perf'?`<span class="flag">${svg('bookmark',12)}Last read here · 2 days ago</span>`:''}</li>`).join('')}</ol>
+    </aside>
+  </div></div>`;
+}
+
+/* ---------------- B. Review binder ---------------- */
+const DIV={docs:'#3f7fbf',tickets:'#c0872c','.claude':'#8a6bbf',root:'#5f6b7a'};
+const TABC=['#4f7cc0','#2f9a8a','#c4912e','#bf5f7e','#7b69bf'];
+function binderRows(){
+  let out='',rootShown=false;
+  for(const {n,d,top} of rows()){
+    if(d===0&&n.dir){out+=`<div class="row divider dir ${n.open?'open':''}" data-id="${n.id}" style="padding-left:8px"><span class="chev">${svg('chevron',13,2)}</span><span class="tabchip" style="--tc:${DIV[top]}"></span>${n.name}<span class="count">${countMd(n)}</span></div>`;continue}
+    if(top==='root'&&!rootShown){rootShown=true;out+=`<div class="row divider" style="padding-left:8px"><span class="chev"></span><span class="tabchip" style="--tc:${DIV.root}"></span>Top level<span class="count">4</span></div>`}
+    const pad=8+Math.max(d,1)*16;
+    out+=n.dir
+      ?`<div class="row dir ${n.open?'open':''}" data-id="${n.id}" style="padding-left:${pad}px"><span class="chev">${svg('chevron',13,2)}</span>${svg(n.open?'folderOpen':'folder',15)}${n.name}</div>`
+      :`<div class="row file ${n.active?'active':''}" data-id="${n.id}" style="padding-left:${pad+14}px">${svg('fileText',15)}${n.name}</div>`;
+  }
+  return out;
+}
+function renderBinder(){
+  return `<div class="win v-binder">
+  <header class="titlebar"><span class="appic"></span><span class="tt"><b>spec.md</b> — md-viewer</span>${wc()}</header>
+  <div class="body">
+    <aside class="side">
+      <div class="side-head"><div class="root-name">md-viewer</div><div class="root-path">D:\\repos\\md-viewer</div><div class="filter">${svg('search',14)}Filter files</div></div>
+      <div class="tree-scroll"><nav class="tree">${binderRows()}</nav></div>
+    </aside>
+    <main class="desk doc-scroll">
+      <div class="runhead"><span>md-viewer</span><i>/</i><span>docs</span><i>/</i><b>spec.md</b><span class="rh-r">Updated 10 Oct 2026 · 6 min read</span></div>
+      <div class="sheetwrap">
+        <div class="sheet">
+          <div class="slip">
+            <div><span class="k">Status</span><span class="stamp">Draft</span></div>
+            <div><span class="k">Owner</span><span class="v">implementer agent</span></div>
+            <div><span class="k">Updated</span><span class="v">2026-10-10</span></div>
+            <div><span class="k">Tickets</span><span class="v">001 · 002 · 003</span></div>
+          </div>
+          <article class="md">${DOC}</article>
+        </div>
+        <nav class="tabs" aria-label="Sections">${TOC.map((t,i)=>`<button class="tab" data-toc data-i="${i}" data-go="${t[0]}" style="--tc:${TABC[i%TABC.length]}"><span>${t[1]}</span></button>`).join('')}</nav>
+      </div>
+    </main>
+  </div></div>`;
+}
+
+/* ---------------- C. VS Code standard ---------------- */
+function codeRow({n,d}){
+  let g='';for(let k=0;k<d;k++)g+=`<span class="g" style="left:${16+k*12}px"></span>`;
+  const pad=8+d*12;
+  return n.dir
+    ?`<div class="row dir ${n.open?'open':''}" data-id="${n.id}" style="padding-left:${pad}px">${g}<span class="chev">${svg('chevron',14,2)}</span>${n.name}</div>`
+    :`<div class="row file ${n.active?'active':''}" data-id="${n.id}" style="padding-left:${pad+16}px">${g}<span class="mdi">${svg('md',16,1.6)}</span>${n.name}</div>`;
+}
+function renderCode(){
+  return `<div class="win v-code">
+  <header class="titlebar"><span style="color:var(--acc)">${svg('md',18,1.8)}</span><nav class="menu"><span>File</span><span>View</span><span>Go</span><span>Help</span></nav><div class="cc">${svg('search',13)}md-viewer</div>${wc()}</header>
+  <div class="body">
+    <nav class="activity"><button class="on" aria-label="Explorer">${svg('files',24,1.5)}</button><button aria-label="Search">${svg('search',24,1.5)}</button><button aria-label="Outline">${svg('listTree',24,1.5)}</button></nav>
+    <aside class="side">
+      <div class="sh">Explorer</div>
+      <div class="sec">${svg('chevron',14,2)}md-viewer</div>
+      <div class="tree-scroll"><nav class="tree">${rows().map(codeRow).join('')}</nav></div>
+      <div class="sec closed">${svg('chevron',14,2)}Outline</div>
+    </aside>
+    <section class="editor">
+      <div class="tabsbar"><div class="etab on">${svg('eye',14)}<span>Preview spec.md</span><span class="x">${svg('x',14)}</span></div><div class="etab"><span class="mdi">${svg('md',16,1.6)}</span>README.md</div></div>
+      <div class="crumbs">md-viewer ${svg('chevron',12,2)} docs ${svg('chevron',12,2)} <span class="mdi" style="color:#519aba">${svg('md',14,1.6)}</span> spec.md</div>
+      <div class="pv">
+        <main class="doc-scroll"><article class="md">
+          <table class="fm"><thead><tr><th>status</th><th>owner</th><th>updated</th><th>tickets</th></tr></thead><tbody><tr><td>draft</td><td>implementer agent</td><td>2026-10-10</td><td>001, 002, 003</td></tr></tbody></table>
+          ${DOC}</article></main>
+        <aside class="mpe-toc"><div class="h">Table of contents</div>${TOC.map((t,i)=>`<a data-toc data-i="${i}" data-go="${t[0]}">${t[1]}</a>`).join('')}</aside>
+      </div>
+    </section>
+  </div>
+  <footer class="status"><span>${svg('branch',13)}main</span><span>${svg('lock',13)}Read-only</span><span class="r">1,284 words</span><span>UTF-8</span><span>LF</span><span>Markdown</span></footer>
+</div>`;
+}
+
+/* ---------------- shell ---------------- */
+const CAPS={
+ metro:'<b>A · 노선도</b> — 폴더마다 지하철 노선 색을 부여합니다. 트리 · 상단 경로 · 오른쪽 목차가 하나의 노선 언어로 이어져 “지금 어디에 있는지”가 항상 보입니다. 목차는 읽은 구간 실선, 남은 구간 점선. 마지막으로 읽던 위치를 표시합니다.',
+ binder:'<b>B · 검토 바인더</b> — 문서를 검토용 종이 한 장처럼 보여줍니다. front matter는 상단 결재 전표(상태 · 담당 · 날짜)로, 목차는 종이 오른쪽에 꽂힌 인덱스 탭으로 바뀝니다.',
+ code:'<b>C · VS Code 표준</b> — VS Code + Markdown Preview Enhanced 배치를 그대로 옮긴 안. 배울 것이 없는 대신 개성도 없습니다.'
+};
+const R={metro:renderMetro,binder:renderBinder,code:renderCode};
+const app=document.getElementById('app');
+function render(keepScroll){
+  const prev=keepScroll?(app.querySelector('.doc-scroll')||{}).scrollTop||0:0;
+  document.documentElement.dataset.theme=theme;
+  app.innerHTML=R[variant]();
+  document.querySelectorAll('.mock-switch [data-v]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===variant));
+  document.getElementById('themeBtn').innerHTML=(theme==='dark'?svg('sun',15):svg('moon',15))+(theme==='dark'?'라이트':'다크');
+  document.getElementById('cap').innerHTML=CAPS[variant];
+  const sc=app.querySelector('.doc-scroll');sc.scrollTop=prev||(+hp.get('s')||0);
+  sc.addEventListener('scroll',spy,{passive:true});spy();
+}
+function spy(){
+  const sc=app.querySelector('.doc-scroll');if(!sc)return;
+  const top=sc.getBoundingClientRect().top;let cur=0;
+  TOC.forEach((t,i)=>{const el=sc.querySelector('#'+t[0]);if(el&&el.getBoundingClientRect().top-top<=140)cur=i});
+  const max=sc.scrollHeight-sc.clientHeight;
+  if(sc.scrollTop>=max-4)cur=TOC.length-1;
+  app.querySelectorAll('[data-toc]').forEach(el=>{const i=+el.dataset.i;el.classList.toggle('done',i<cur);el.classList.toggle('cur',i===cur);el.classList.toggle('next',i>cur)});
+  const p=app.querySelector('.progress');if(p)p.style.setProperty('--p',max>0?sc.scrollTop/max:0);
+}
+app.addEventListener('click',e=>{
+  const go=e.target.closest('[data-go]');
+  if(go){const sc=app.querySelector('.doc-scroll'),el=sc.querySelector('#'+go.dataset.go);sc.scrollTo({top:el.getBoundingClientRect().top-sc.getBoundingClientRect().top+sc.scrollTop-(variant==='binder'?64:28),behavior:'smooth'});return}
+  const row=e.target.closest('.row[data-id]');if(!row)return;
+  const n=byId(row.dataset.id);
+  if(n.dir){n.open=!n.open;render(true)}
+});
+document.querySelector('.mock-switch').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.v){variant=b.dataset.v;store.set('mdv.variant',variant);render(false)}
+  else if(b.dataset.act==='theme'){theme=theme==='dark'?'light':'dark';store.set('mdv.theme',theme);render(true)}
+  else if(b.dataset.act==='min'){document.querySelector('.mock-switch').classList.toggle('min')}
+});
+addEventListener('keydown',e=>{
+  if(e.key==='1'||e.key==='2'||e.key==='3'){variant=['metro','binder','code'][+e.key-1];store.set('mdv.variant',variant);render(false)}
+  else if(e.key==='t'||e.key==='T'){theme=theme==='dark'?'light':'dark';store.set('mdv.theme',theme);render(true)}
+  else if(e.key==='h'||e.key==='H'){document.querySelector('.mock-switch').classList.toggle('min')}
+});
+render(false);
+})();
+</script>
+</body>
+</html>
