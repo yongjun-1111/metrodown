@@ -106,7 +106,7 @@
 [data-theme="dark"] .l8 { --lc: #ff5c99; --lc-ink: #0a0d11; }
 [data-theme="dark"] .l9 { --lc: #d8cdaf; --lc-ink: #0a0d11; }
 
-* { box-sizing: border-box; }
+*, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); }
 body { font-family: var(--ui); color: var(--ink); -webkit-font-smoothing: antialiased; }
 button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: default; }
