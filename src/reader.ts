@@ -51,6 +51,12 @@ function frontMatterBlock(meta: FrontMatter | null): string {
 DOMPurify.addHook("afterSanitizeAttributes", (node) => {
   // srcset candidates would resolve against the app, not the document; `src` alone is enough.
   node.removeAttribute("srcset");
+  // A chart pasted as SVG (e.g. exported from Mermaid) takes its size from an inline max-width,
+  // which is stripped with all inline styles; its viewBox width is the same natural size.
+  if (node.nodeName === "svg" && node.getAttribute("width") === "100%") {
+    const w = Number(node.getAttribute("viewBox")?.trim().split(/[\s,]+/)[2]);
+    if (w > 0) node.setAttribute("width", String(Math.ceil(w)));
+  }
   if (node.tagName !== "IMG") return;
   const src = node.getAttribute("src");
   if (src && !/^(https?:|data:|asset:|blob:|#)/i.test(src)) {
@@ -66,6 +72,9 @@ function sanitize(html: string, path: string): string {
   return DOMPurify.sanitize(aligned, {
     FORBID_TAGS: ["style", "script", "iframe", "object", "embed", "form", "input", "button", "link", "meta", "base"],
     FORBID_ATTR: ["style"],
+    // Labels in exported SVG charts are HTML inside foreignObject; scripts stay blocked by the CSP.
+    ADD_TAGS: ["foreignObject"],
+    HTML_INTEGRATION_POINTS: { "annotation-xml": true, foreignobject: true },
     ADD_ATTR: ["data-lang"],
   });
 }

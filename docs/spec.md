@@ -22,7 +22,7 @@ Editing or saving, sync, plugins, export, Linux builds, footnotes and KaTeX math
 | Frontend | Vanilla TypeScript + Vite, no UI framework | Smallest bundle and fastest start for one screen |
 | Parser | markdown-it with in-house task-list, front-matter and GitHub alert rules | Same parser family as MPE |
 | Highlighting | highlight.js core with a curated language set | Keeps bundle small |
-| Raw HTML | Allowed, sanitized with DOMPurify | Documents can embed HTML; scripts must never reach Tauri IPC |
+| Raw HTML | Allowed, sanitized with DOMPurify; inline styles stripped; SVG `foreignObject` kept, and a `width="100%"` SVG takes its viewBox width | Documents can embed HTML, including charts exported as SVG; scripts must never reach Tauri IPC (the CSP blocks them even inside `foreignObject`) |
 | Filesystem | Backend exposes read-only commands only | "Never modify the user's files" |
 | Window | Custom title bar (decorations off), drag regions, native min/max/close behaviour | The sign band carries the route breadcrumb |
 | Name | Metrodown (renamed from md-viewer in 0.2.0); the bundle identifier stays `com.yongjun1111.mdviewer` | The metro-map motif; keeping the identifier keeps saved settings, read positions and the single-instance lock |

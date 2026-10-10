@@ -126,6 +126,13 @@ flowchart LR
   D --> E
 ```
 
+### Pasted SVG chart
+
+A chart exported as SVG without its stylesheet: it keeps its natural 240px width, its labels
+(HTML inside `foreignObject`) show, and the arrowhead follows the theme.
+
+<svg width="100%" viewBox="0 0 240 150" style="max-width: 240px;" xmlns="http://www.w3.org/2000/svg"><marker id="fx-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z"></path></marker><rect x="60" y="10" width="120" height="40" fill="none" stroke="currentColor"></rect><foreignObject x="60" y="18" width="120" height="24"><p>Oscillator</p></foreignObject><path d="M120,50L120,92" fill="none" stroke="currentColor" marker-end="url(#fx-arrow)"></path><rect x="60" y="100" width="120" height="40" fill="none" stroke="currentColor"></rect><foreignObject x="60" y="108" width="120" height="24"><p>필터</p></foreignObject></svg>
+
 ## Images
 
 ![Metrodown icon](../src-tauri/icons/128x128.png)

@@ -279,6 +279,11 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .md pre.mermaid-error::after { content: "Diagram could not be drawn"; color: var(--a-caution); }
 .md figure.mermaid { margin: 0 0 1.3rem; padding: 16px; border: 1px solid var(--rule); border-radius: 8px; overflow: auto; text-align: center; }
 .md figure.mermaid svg { max-width: 100%; height: auto; }
+/* SVG pasted into a document, often a chart exported without its stylesheet. */
+.md svg:not(figure.mermaid svg) { max-width: 100%; height: auto; }
+.md svg:not(figure.mermaid svg) foreignObject { overflow: visible; }
+.md svg:not(figure.mermaid svg) foreignObject p { margin: 0; font-size: 14px; line-height: 24px; text-align: center; white-space: nowrap; }
+.md svg:not(figure.mermaid svg) marker :is(path, polygon, circle) { fill: currentColor; }
 .md table { border-collapse: collapse; display: block; width: max-content; max-width: 100%; overflow: auto; margin: 0 0 1.3rem; font-size: 15px; font-variant-numeric: tabular-nums; }
 .md th, .md td { border: 1px solid var(--rule); padding: 7px 13px; text-align: left; vertical-align: top; }
 .md th { background: var(--th-bg); font-weight: 620; }
