@@ -13,7 +13,8 @@ import { store } from "./store";
 
 type TreeNode = { name: string; path: string; children?: TreeNode[] };
 type FileData = { text: string; modifiedMs: number };
-type ReadPos = { top: number; id: string | null; t: number };
+// `off` is the scroll offset from heading `id`, so a position survives images loading above it.
+type ReadPos = { top: number; id: string | null; off?: number; t: number };
 type Row = { node: TreeNode; depth: number; line: number };
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -277,7 +278,7 @@ function frontMatterBlock(meta: FrontMatter | null): string {
   const rest = Object.entries(meta).filter(([k]) => !shown.has(k));
   if (!rest.length) return "";
   const rows = rest.map(([k, v]) => `<tr><td>${escapeHtml(k)}</td><td>${escapeHtml(Array.isArray(v) ? v.join(", ") : v)}</td></tr>`).join("");
-  return `<details class="fm"><summary>Front matter · ${rest.length} field${rest.length === 1 ? "" : "s"}</summary><table>${rows}</table></details>`;
+  return `<details class="fm"><summary>${svg("chevron", 12, 2)}Front matter ·${rest.length} field${rest.length === 1 ? "" : "s"}</summary><table>${rows}</table></details>`;
 }
 
 function assetUrl(src: string): string {
@@ -364,7 +365,9 @@ function updateReading() {
 function saveReadPosition() {
   if (!state.current) return;
   const id = state.outline.length ? state.outline[currentSection()]?.id ?? null : null;
-  positions[state.current.toLowerCase()] = { top: Math.round(el.scroll.scrollTop), id, t: Date.now() };
+  const top = Math.round(el.scroll.scrollTop);
+  const anchor = id ? headingTop(id) : null;
+  positions[state.current.toLowerCase()] = { top, id, off: anchor === null ? undefined : top - anchor, t: Date.now() };
   const keys = Object.keys(positions);
   if (keys.length > 400) {
     keys.sort((a, b) => positions[a].t - positions[b].t).slice(0, keys.length - 400).forEach((k) => delete positions[k]);
@@ -382,6 +385,30 @@ el.scroll.addEventListener(
   },
   { passive: true },
 );
+
+/** Scroll offset of a heading inside the document pane, or null when it is not rendered. */
+function headingTop(id: string): number | null {
+  const target = document.getElementById(id);
+  if (!target) return null;
+  return Math.round(target.getBoundingClientRect().top - el.scroll.getBoundingClientRect().top + el.scroll.scrollTop);
+}
+
+function restorePosition(pos: ReadPos) {
+  const apply = () => {
+    const anchor = pos.id && pos.off !== undefined ? headingTop(pos.id) : null;
+    el.scroll.scrollTop = anchor === null ? pos.top : anchor + pos.off!;
+  };
+  apply();
+  // Images above the position change the layout as they load; follow them until the reader scrolls.
+  const article = el.doc.querySelector("article");
+  let userScrolled = false;
+  const stop = () => (userScrolled = true);
+  el.scroll.addEventListener("wheel", stop, { once: true, passive: true });
+  el.scroll.addEventListener("keydown", stop, { once: true });
+  article?.querySelectorAll("img").forEach((img) => {
+    if (!img.complete) img.addEventListener("load", () => !userScrolled && apply(), { once: true });
+  });
+}
 
 function scrollToId(id: string, smooth = true) {
   const target = document.getElementById(id) ?? document.getElementById(id.toLowerCase());
@@ -425,7 +452,8 @@ async function openFile(path: string, opts: { push?: boolean; anchor?: string; k
   void appWindow.setTitle(`${basename(path)} — md-viewer`);
   if (opts.keepScroll) el.scroll.scrollTop = keepTop;
   else if (opts.anchor) scrollToId(opts.anchor, false);
-  else el.scroll.scrollTop = saved ? saved.top : 0;
+  else if (saved) restorePosition(saved);
+  else el.scroll.scrollTop = 0;
   updateReading();
   el.tree.querySelector(".row.active")?.scrollIntoView({ block: "nearest" });
   // Let PageDown/Space scroll the document right away, unless the reader is in the tree or filter.

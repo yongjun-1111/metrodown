@@ -30,3 +30,8 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 ## Reference
 
 Approved mockup: design/mockups/index.html (variant A).
+
+## Additions after build
+
+- Front-matter disclosure row under the meta row ("Front matter · N fields"), with the app's SVG chevron: the meta row shows only status and updated, and docs/spec.md Behaviour 5 asks for the remaining keys in a collapsible table.
+- Theme toggle in the sign band (docs/spec.md Behaviour 11).

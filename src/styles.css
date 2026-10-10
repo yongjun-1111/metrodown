@@ -215,7 +215,10 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 [data-theme="light"] .l9 .sign .state, [data-theme="light"] .sign.l9 .state { color: var(--ink); }
 
 .fm { max-width: 46rem; margin: -6px auto 22px; font-size: 13px; color: var(--ink-2); }
-.fm summary { cursor: default; color: var(--ink-3); width: max-content; }
+.fm summary { cursor: default; color: var(--ink-3); width: max-content; list-style: none; display: flex; align-items: center; gap: 5px; }
+.fm summary::-webkit-details-marker { display: none; }
+.fm summary .ic { transition: transform 0.15s ease-out; }
+.fm[open] summary .ic { transform: rotate(90deg); }
 .fm summary:hover { color: var(--ink); }
 .fm table { margin-top: 8px; border-collapse: collapse; font-size: 13px; }
 .fm td { border: 1px solid var(--rule); padding: 4px 10px; vertical-align: top; }
