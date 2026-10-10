@@ -35,3 +35,11 @@ Approved mockup: design/mockups/index.html (variant A).
 
 - Front-matter disclosure row under the meta row ("Front matter · N fields"), with the app's SVG chevron: the meta row shows only status and updated, and docs/spec.md Behaviour 5 asks for the remaining keys in a collapsible table.
 - Theme toggle in the sign band (docs/spec.md Behaviour 11).
+
+## Changes from user feedback (2026-10-10, after installing the first build)
+
+- Line symbols without numbers: the root taking line 1 made folder numbers start at 2, which read as arbitrary. Colour alone identifies a line.
+- Open folder moved from the sign band to the right end of the folder name row in the sidebar.
+- Tree guides: one trunk per top-level folder instead of one guide per nesting level; the open file is joined to the trunk by a horizontal branch.
+- Reading progress line removed: it repeated the outline route.
+- Diagrams: text diagrams keep a two-column cell per wide character and a tight line height so box-drawing lines join; Mermaid blocks are drawn as figures (lazy-loaded).

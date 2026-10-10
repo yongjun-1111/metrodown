@@ -13,7 +13,6 @@
         <div class="brand" data-tauri-drag-region><span class="logo" data-tauri-drag-region></span>md-viewer</div>
         <nav class="route" id="route" aria-label="Current path" data-tauri-drag-region></nav>
         <div class="tb-actions">
-          <button class="tb-btn" id="openBtn" title="Open folder (Ctrl+O)"></button>
           <button class="tb-icon" id="themeBtn"></button>
         </div>
         <div class="wc">
@@ -25,7 +24,10 @@
       <div class="body" id="body">
         <aside class="side">
           <div class="side-head">
-            <div class="root-name" id="rootName"></div>
+            <div class="root-row">
+              <div class="root-name" id="rootName">No folder open</div>
+              <button class="side-btn" id="openBtn" title="Open folder (Ctrl+O)" aria-label="Open folder"></button>
+            </div>
             <div class="root-path" id="rootPath"></div>
             <label class="filter" id="filterBox" hidden><span id="filterIcon"></span><input id="filter" type="search" placeholder="Filter files" spellcheck="false" autocomplete="off" aria-label="Filter files (Ctrl+P)" /></label>
           </div>
@@ -34,7 +36,6 @@
           <div class="resizer" id="resizer" role="separator" aria-orientation="vertical" aria-label="Resize sidebar"></div>
         </aside>
         <div class="main">
-          <div class="progress" id="progress"></div>
           <main class="doc-scroll" id="docScroll" tabindex="-1"><div id="doc"></div></main>
         </div>
         <aside class="outline">

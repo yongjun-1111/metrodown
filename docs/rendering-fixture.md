@@ -96,11 +96,34 @@ Get-ChildItem -Recurse -Filter *.md | Measure-Object
 A fence without a language stays plain text.
 ```
 
-### Mermaid (planned)
+## Diagrams
+
+### Text diagram
+
+Box-drawing lines must join, and Korean text takes exactly two columns.
+
+```
+카드 명세서 ──▶ csv.ts ─────┐
+(CSV/xlsx)      xlsx.ts     │
+                            ├──▶ Txn[] ──▶ detect.ts ──▶ Series[] ─┐
+Gmail / JSON ──▶ gmail.ts ──┤                                      │
+                 email.ts ──┘                                      ▼
+                                                               사용자 확인
+                                                                   │
+                                                                   ▼
+                              Subscription[] ──▶ money.ts ──▶ Totals
+                                    │
+                                    └────────▶ analyze.ts ──▶ Finding[]
+```
+
+### Mermaid
 
 ```mermaid
-graph LR
-  A[Open folder] --> B[Pick file] --> C[Read]
+flowchart LR
+  A[Open folder] --> B[Pick file] --> C{Front matter?}
+  C -- yes --> D[Meta row]
+  C -- no --> E[Read]
+  D --> E
 ```
 
 ## Images

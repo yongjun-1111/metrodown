@@ -1,4 +1,5 @@
 // Window chrome: theme, title-bar buttons, sidebar width and app-wide keys.
+import { drawDiagrams } from "./diagrams";
 import { appWindow, el } from "./dom";
 import { svg } from "./icons";
 import { saveReadPosition } from "./reader";
@@ -18,6 +19,7 @@ function applyTheme() {
   document.documentElement.dataset.theme = t;
   el.themeBtn.innerHTML = svg(t === "dark" ? "sun" : "moon", 16);
   el.themeBtn.title = t === "dark" ? "Switch to light theme" : "Switch to dark theme";
+  void drawDiagrams();
 }
 
 async function syncMaxIcon() {
@@ -67,7 +69,7 @@ export function initShell() {
     applyTheme();
   });
 
-  el.openBtn.innerHTML = `${svg("folderOpen", 15)}Open folder`;
+  el.openBtn.innerHTML = svg("folderOpen", 16);
   el.openBtn.addEventListener("click", () => void pickFolder());
   el.wcMin.addEventListener("click", () => void appWindow.minimize());
   el.wcMax.addEventListener("click", () => void appWindow.toggleMaximize());

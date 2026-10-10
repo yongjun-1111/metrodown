@@ -1,6 +1,7 @@
-// The document pane: rendering, the outline route, reading progress and read positions.
+// The document pane: rendering, the outline route and read positions.
 import { convertFileSrc } from "@tauri-apps/api/core";
 import DOMPurify from "dompurify";
+import { drawDiagrams } from "./diagrams";
 import { el, escapeHtml } from "./dom";
 import { DATE_KEYS, metaDate, metaStatus, STATUS_KEYS, type FrontMatter } from "./frontmatter";
 import { svg } from "./icons";
@@ -69,13 +70,13 @@ function sanitize(html: string, path: string): string {
   });
 }
 
-function signRow(path: string, line: number, meta: FrontMatter | null, modifiedMs: number, words: number): string {
+function signRow(path: string, meta: FrontMatter | null, modifiedMs: number, words: number): string {
   const parts = state.root ? relativeParts(state.root, path) : null;
   const folder = parts && parts.length > 1 ? parts[0] : basename(state.root ?? dirname(path));
   const status = metaStatus(meta);
   const date = metaDate(meta) ?? (modifiedMs ? formatDate(modifiedMs) : null);
   const bits = [
-    `<span class="badge">${line}</span><span class="line">${escapeHtml(folder)}</span>`,
+    `<span class="badge"></span><span class="line">${escapeHtml(folder)}</span>`,
     status ? `<span class="state">${escapeHtml(status)}</span>` : "",
     date ? `<span>Updated ${escapeHtml(date)}</span>` : "",
     `<span>${Math.max(1, Math.round(words / 220))} min read</span>`,
@@ -104,7 +105,7 @@ function renderOutline(flagId: string | null, flagTime: number) {
 export function showDocument(data: FileData, path: string, line: number, opts: { anchor?: string; keepScroll?: boolean }) {
   const keepTop = el.scroll.scrollTop;
   const { html, meta, headings, words } = renderMarkdown(data.text);
-  el.doc.innerHTML = signRow(path, line, meta, data.modifiedMs, words) + frontMatterBlock(meta) + `<article class="md">${sanitize(html, path)}</article>`;
+  el.doc.innerHTML = signRow(path, meta, data.modifiedMs, words) + frontMatterBlock(meta) + `<article class="md">${sanitize(html, path)}</article>`;
   el.body.className = `body l${line}`;
   const sections = headings.filter((h) => h.level === 2 || h.level === 3);
   outline = sections.length ? sections : headings.filter((h, i) => h.level === 1 && i > 0);
@@ -118,7 +119,8 @@ export function showDocument(data: FileData, path: string, line: number, opts: {
   else if (opts.anchor) scrollToId(opts.anchor, false);
   else if (saved) restorePosition(saved);
   else el.scroll.scrollTop = 0;
-  updateReading();
+  updateOutline();
+  void drawDiagrams();
 }
 
 export function showMessage(title: string, body: string, extra = "") {
@@ -126,7 +128,6 @@ export function showMessage(title: string, body: string, extra = "") {
   stopRestore();
   el.body.className = "body l1 no-outline";
   el.toc.innerHTML = "";
-  el.progress.style.setProperty("--p", "0");
   el.doc.innerHTML = `<section class="state-page"><h1>${escapeHtml(title)}</h1><p>${body}</p>${extra}</section>`;
   el.scroll.scrollTop = 0;
 }
@@ -163,9 +164,7 @@ function currentSection(): number {
   return cur;
 }
 
-function updateReading() {
-  const max = el.scroll.scrollHeight - el.scroll.clientHeight;
-  el.progress.style.setProperty("--p", String(max > 0 ? el.scroll.scrollTop / max : 0));
+function updateOutline() {
   if (!outline.length) return;
   const cur = currentSection();
   el.toc.querySelectorAll<HTMLElement>("li").forEach((li) => {
@@ -195,12 +194,15 @@ function restorePosition(pos: ReadPos) {
     el.scroll.scrollTop = anchor === null ? pos.top : anchor + pos.off!;
   };
   apply();
-  // Images above the position change the layout as they load; follow them until the reader takes over.
+  // Images and diagrams above the position change the layout as they load; follow them until
+  // the reader takes over.
   const pending = [...el.doc.querySelectorAll<HTMLImageElement>("article img")].filter((img) => !img.complete);
-  if (!pending.length) return;
+  const diagrams = !!el.doc.querySelector("pre.mermaid-src");
+  if (!pending.length && !diagrams) return;
   const { signal } = (restoring = new AbortController());
   for (const type of ["wheel", "keydown", "pointerdown"]) el.scroll.addEventListener(type, stopRestore, { once: true, passive: true, signal });
   pending.forEach((img) => img.addEventListener("load", apply, { once: true, signal }));
+  if (diagrams) el.doc.addEventListener("layoutchange", apply, { once: true, signal });
 }
 
 export function initReader() {
@@ -208,7 +210,7 @@ export function initReader() {
   el.scroll.addEventListener(
     "scroll",
     () => {
-      updateReading();
+      updateOutline();
       clearTimeout(saveTimer);
       saveTimer = window.setTimeout(saveReadPosition, 400);
     },

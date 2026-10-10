@@ -42,6 +42,18 @@ describe("renderMarkdown", () => {
     expect(other).toContain("&lt;b&gt;x&lt;/b&gt;");
   });
 
+  it("keeps text diagrams on a column grid", () => {
+    const html = renderMarkdown("```\n카드 ─┐\n     │\n```").html;
+    expect(html).toContain('<pre class="diagram">');
+    expect(html).toContain('<span class="w">카</span><span class="w">드</span> ─┐');
+    expect(renderMarkdown("```\nplain\n```").html).not.toContain("diagram");
+  });
+
+  it("leaves Mermaid source for the reader to draw", () => {
+    const html = renderMarkdown("```mermaid\ngraph LR\n  A --> B\n```").html;
+    expect(html).toContain('<pre data-lang="mermaid" class="mermaid-src"><code>graph LR\n  A --&gt; B\n</code></pre>');
+  });
+
   it("gives headings GitHub-style unique ids and lists them", () => {
     const { html, headings } = renderMarkdown("# Title\n## Goals & non-goals\n## Goals & non-goals\n### `code` step");
     expect(html).toContain('<h2 id="goals--non-goals">');

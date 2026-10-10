@@ -1,40 +1,142 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-10T16:40:00+09:00",
+  "generatedAt": "2026-10-10T17:40:00+09:00",
   "title": "Design System: md-viewer",
   "extensions": {
     "colorMeta": {
-      "line-1": { "role": "primary", "displayName": "Line 1 Blue (root files)", "canonical": "#0052a4", "dark": "#4c8dff" },
-      "line-2": { "role": "primary", "displayName": "Line 2 Green", "canonical": "#00a84d", "dark": "#35c776" },
-      "line-3": { "role": "primary", "displayName": "Line 3 Orange", "canonical": "#ef7c1c", "dark": "#ff9a45" },
-      "line-4": { "role": "primary", "displayName": "Line 4 Sky", "canonical": "#00a5de", "dark": "#38c3f5" },
-      "line-5": { "role": "primary", "displayName": "Line 5 Violet", "canonical": "#996cac", "dark": "#c29cd6" },
-      "line-6": { "role": "primary", "displayName": "Line 6 Ochre", "canonical": "#cd7c2f", "dark": "#e39a55" },
-      "line-7": { "role": "primary", "displayName": "Line 7 Olive", "canonical": "#747f00", "dark": "#b0bc33" },
-      "line-8": { "role": "primary", "displayName": "Line 8 Magenta", "canonical": "#e6186c", "dark": "#ff5c99" },
-      "line-9": { "role": "primary", "displayName": "Line 9 Sand", "canonical": "#bdb092", "dark": "#d8cdaf" },
-      "sign-navy": { "role": "neutral", "displayName": "Sign Navy", "canonical": "#172030", "dark": "#080b0f" },
-      "panel-grey": { "role": "neutral", "displayName": "Panel Grey", "canonical": "#f3f5f8", "dark": "#141920" },
-      "reading-ground": { "role": "neutral", "displayName": "Reading Ground", "canonical": "#ffffff", "dark": "#0e1217" },
-      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#1c222b", "dark": "#e3e7ed" },
-      "link-blue": { "role": "neutral", "displayName": "Link Blue", "canonical": "#0a5bd3", "dark": "#6aa8ff" }
+      "line-1": {
+        "role": "primary",
+        "displayName": "Line 1 Blue (root files)",
+        "canonical": "#0052a4",
+        "dark": "#4c8dff"
+      },
+      "line-2": {
+        "role": "primary",
+        "displayName": "Line 2 Green",
+        "canonical": "#00a84d",
+        "dark": "#35c776"
+      },
+      "line-3": {
+        "role": "primary",
+        "displayName": "Line 3 Orange",
+        "canonical": "#ef7c1c",
+        "dark": "#ff9a45"
+      },
+      "line-4": {
+        "role": "primary",
+        "displayName": "Line 4 Sky",
+        "canonical": "#00a5de",
+        "dark": "#38c3f5"
+      },
+      "line-5": {
+        "role": "primary",
+        "displayName": "Line 5 Violet",
+        "canonical": "#996cac",
+        "dark": "#c29cd6"
+      },
+      "line-6": {
+        "role": "primary",
+        "displayName": "Line 6 Ochre",
+        "canonical": "#cd7c2f",
+        "dark": "#e39a55"
+      },
+      "line-7": {
+        "role": "primary",
+        "displayName": "Line 7 Olive",
+        "canonical": "#747f00",
+        "dark": "#b0bc33"
+      },
+      "line-8": {
+        "role": "primary",
+        "displayName": "Line 8 Magenta",
+        "canonical": "#e6186c",
+        "dark": "#ff5c99"
+      },
+      "line-9": {
+        "role": "primary",
+        "displayName": "Line 9 Sand",
+        "canonical": "#bdb092",
+        "dark": "#d8cdaf"
+      },
+      "sign-navy": {
+        "role": "neutral",
+        "displayName": "Sign Navy",
+        "canonical": "#172030",
+        "dark": "#080b0f"
+      },
+      "panel-grey": {
+        "role": "neutral",
+        "displayName": "Panel Grey",
+        "canonical": "#f3f5f8",
+        "dark": "#141920"
+      },
+      "reading-ground": {
+        "role": "neutral",
+        "displayName": "Reading Ground",
+        "canonical": "#ffffff",
+        "dark": "#0e1217"
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#1c222b",
+        "dark": "#e3e7ed"
+      },
+      "link-blue": {
+        "role": "neutral",
+        "displayName": "Link Blue",
+        "canonical": "#0a5bd3",
+        "dark": "#6aa8ff"
+      }
     },
     "typographyMeta": {
-      "display": { "displayName": "Document h1", "purpose": "The document title only." },
-      "headline": { "displayName": "h2", "purpose": "Sections; outline stops." },
-      "title": { "displayName": "h3", "purpose": "Sub-sections; outline sub-stops." },
-      "body": { "displayName": "Body", "purpose": "Document prose at a 46rem measure." },
-      "label": { "displayName": "Label", "purpose": "Panel headings and counts." },
-      "code": { "displayName": "Code", "purpose": "Code blocks, ligatures off." }
+      "display": {
+        "displayName": "Document h1",
+        "purpose": "The document title only."
+      },
+      "headline": {
+        "displayName": "h2",
+        "purpose": "Sections; outline stops."
+      },
+      "title": {
+        "displayName": "h3",
+        "purpose": "Sub-sections; outline sub-stops."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Document prose at a 46rem measure."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Panel headings and counts."
+      },
+      "code": {
+        "displayName": "Code",
+        "purpose": "Code blocks, ligatures off."
+      }
     },
     "shadows": [],
     "motion": [
-      { "name": "state", "value": "0.15s ease-out", "purpose": "Chevron rotation, button hover fills." },
-      { "name": "progress", "value": "width 0.12s linear", "purpose": "Reading progress line." }
+      {
+        "name": "state",
+        "value": "0.15s ease-out",
+        "purpose": "Chevron rotation, button hover fills."
+      },
+      {
+        "name": "progress",
+        "value": "width 0.12s linear",
+        "purpose": "Reading progress line."
+      }
     ],
     "breakpoints": [
-      { "name": "no-outline", "value": "1100px" },
-      { "name": "compact-doc", "value": "900px" }
+      {
+        "name": "no-outline",
+        "value": "1100px"
+      },
+      {
+        "name": "compact-doc",
+        "value": "900px"
+      }
     ]
   },
   "components": [
@@ -58,9 +160,9 @@
       "name": "Line-map Tree",
       "kind": "nav",
       "refersTo": "tree-row",
-      "description": "A folder line with its badge, a station and the open file as the transfer ring.",
-      "html": "<div class=\"ds-tree\"><div class=\"ds-row ds-dir\"><span class=\"ds-badge\">2</span>docs</div><div class=\"ds-row ds-file\"><span class=\"ds-g\"></span><span class=\"ds-stop\"></span>spec</div><div class=\"ds-row ds-file ds-active\"><span class=\"ds-g\"></span><span class=\"ds-stop\"></span>tickets</div></div>",
-      "css": ".ds-tree { --lc: #00a84d; width: 260px; background: #f3f5f8; padding: 4px 0; font: 13.5px 'Segoe UI Variable Text', 'Segoe UI', sans-serif; color: #1c222b; } .ds-row { position: relative; height: 29px; display: flex; align-items: center; gap: 6px; padding-left: 34px; } .ds-row:hover { background: #e7ebf1; } .ds-dir { padding-left: 12px; font-weight: 600; } .ds-badge { width: 18px; height: 18px; border-radius: 50%; background: var(--lc); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; } .ds-g { position: absolute; left: 19px; top: 0; bottom: 0; width: 2px; background: var(--lc); } .ds-stop { position: absolute; left: 20px; top: 50%; width: 10px; height: 10px; border-radius: 50%; background: #f3f5f8; border: 2px solid var(--lc); transform: translate(-50%, -50%); } .ds-active { background: color-mix(in srgb, var(--lc) 13%, transparent); font-weight: 620; } .ds-active .ds-stop { width: 15px; height: 15px; border-width: 3.5px; background: #fff; }"
+      "description": "One trunk per top-level folder; a nested file sits beside it and the open file is joined by a branch.",
+      "html": "<div class=\"ds-tree\"><div class=\"ds-row ds-dir\"><span class=\"ds-badge\"></span>docs</div><div class=\"ds-row ds-file\"><span class=\"ds-g\"></span><span class=\"ds-stop\"></span>spec</div><div class=\"ds-row ds-dir ds-sub\"><span class=\"ds-g\"></span>adr</div><div class=\"ds-row ds-file ds-deep ds-active\"><span class=\"ds-g\"></span><span class=\"ds-branch\"></span><span class=\"ds-stop\"></span>0001-stack</div></div>",
+      "css": ".ds-tree { --lc: #00a84d; width: 260px; background: #f3f5f8; padding: 4px 0; font: 13.5px 'Segoe UI Variable Text', 'Segoe UI', sans-serif; color: #1c222b; } .ds-row { position: relative; height: 29px; display: flex; align-items: center; gap: 6px; padding-left: 34px; } .ds-row:hover { background: #e7ebf1; } .ds-dir { padding-left: 12px; font-weight: 600; } .ds-badge { width: 12px; height: 12px; border-radius: 50%; background: var(--lc); } .ds-g { position: absolute; left: 19px; top: 0; bottom: 0; width: 2px; background: var(--lc); } .ds-stop { position: absolute; left: 20px; top: 50%; width: 10px; height: 10px; border-radius: 50%; background: #f3f5f8; border: 2px solid var(--lc); transform: translate(-50%, -50%); } .ds-active { background: color-mix(in srgb, var(--lc) 13%, transparent); font-weight: 620; } .ds-active .ds-stop { width: 15px; height: 15px; border-width: 3.5px; background: #fff; } .ds-sub { padding-left: 28px; font-weight: 600; } .ds-deep { padding-left: 50px; } .ds-deep .ds-stop { left: 36px; } .ds-branch { position: absolute; left: 20px; top: 50%; width: 16px; height: 2px; margin-top: -1px; background: var(--lc); }"
     },
     {
       "name": "Outline Route",
@@ -81,21 +183,37 @@
     "northStar": "The Line Map",
     "overview": "md-viewer reads a repository the way a rider reads a metro map. Every top-level folder is a line with a number and a colour; every Markdown file is a station; the open file is the transfer station. The tree, the title-bar route and the outline speak this one language, so the reader always knows which line they are on, which stop they are at, and how much of the document is behind them. Around that map sits a calm reading column modelled on GitHub-style Markdown: a white ground, a 46rem measure, generous line height, and no decoration inside the text that the document did not ask for.",
     "keyCharacteristics": [
-      "Nine Seoul-metro line colours, one per top-level folder; line 1 belongs to files at the root.",
+      "Nine Seoul-metro line colours, one per top-level folder, shown as plain coloured symbols; the first colour belongs to files at the root.",
       "Line form carries state: solid behind the reader, dashed ahead, a white ring for \"you are here\".",
       "A dark navy sign band above a cool grey panel and a white reading ground.",
       "Flat surfaces; depth comes from tone and rules, never shadows.",
       "Light and dark themes with a brighter twin for every line colour."
     ],
     "rules": [
-      { "name": "The Territory Rule", "body": "A line colour says where a file lives, never what state it is in. State is carried by form (solid, dashed, ring), so a reader can tell \"read\" from \"ahead\" without telling green from orange.", "section": "colors" },
-      { "name": "The Two Voices Rule", "body": "Inside the reading column, the only colours are link blue, the alert set and syntax highlighting. Line colour enters the column only through the meta-row badge and done checkboxes.", "section": "colors" },
-      { "name": "The As-Typed Rule", "body": "Code never uses ligatures or contextual alternates; `!=` stays two characters.", "section": "typography" },
-      { "name": "The Flat Map Rule", "body": "A metro map is printed, not lifted. Nothing casts a shadow; if something needs to stand out, give it tone or a ring.", "section": "elevation" }
+      {
+        "name": "The Territory Rule",
+        "body": "A line colour says where a file lives, never what state it is in. State is carried by form (solid, dashed, ring), so a reader can tell \"read\" from \"ahead\" without telling green from orange.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Voices Rule",
+        "body": "Inside the reading column, the only colours are link blue, the alert set and syntax highlighting. Line colour enters the column only through the meta-row symbol and done checkboxes.",
+        "section": "colors"
+      },
+      {
+        "name": "The As-Typed Rule",
+        "body": "Code never uses ligatures or contextual alternates; `!=` stays two characters.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Map Rule",
+        "body": "A metro map is printed, not lifted. Nothing casts a shadow; if something needs to stand out, give it tone or a ring.",
+        "section": "elevation"
+      }
     ],
     "dos": [
       "Do give each new top-level folder the next line colour in order and keep line 1 for root files.",
-      "Do show progress and position with line form: solid behind, dashed ahead, a white ring for the current stop.",
+      "Do show progress and position with line form in the outline only: solid behind, dashed ahead, a white ring for the current stop.",
       "Do keep the reading column at 46rem with 16px/1.72 body text.",
       "Do pair every line colour with its dark-theme twin when adding a surface that uses it.",
       "Do keep Windows-native type: Segoe UI Variable for text, Cascadia Code for code with ligatures off."
@@ -103,7 +221,9 @@
     "donts": [
       "Don't use a line colour to signal state (unread, changed, error); use form or text.",
       "Don't add shadows or lifted cards; separate planes with tone and 1px rules.",
-      "Don't bring line colour into document prose beyond the meta badge and done checkboxes.",
+      "Don't bring line colour into document prose beyond the meta symbol and done checkboxes.",
+      "Don't stack a guide line per nesting level in the tree; one trunk per top-level folder, and a branch for the open file.",
+      "Don't put numbers on line symbols.",
       "Don't show controls that have nothing to act on, such as the filter before a folder is open."
     ]
   }

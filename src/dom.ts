@@ -16,7 +16,6 @@ export const el = {
   doc: $("doc"),
   scroll: $("docScroll"),
   toc: $("toc"),
-  progress: $("progress"),
   themeBtn: $("themeBtn"),
   openBtn: $("openBtn"),
   wcMin: $("wcMin"),

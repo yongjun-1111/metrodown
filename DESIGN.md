@@ -77,11 +77,10 @@ components:
     rounded: "{rounded.sm}"
     padding: "0 16px"
     height: "36px"
-  button-sign:
-    textColor: "{colors.sign-ink-muted}"
+  button-icon:
+    textColor: "{colors.ink-secondary}"
     rounded: "{rounded.sm}"
-    padding: "0 10px"
-    height: "30px"
+    size: "28px"
   input-filter:
     backgroundColor: "{colors.reading-ground}"
     textColor: "{colors.ink}"
@@ -91,11 +90,10 @@ components:
   tree-row:
     textColor: "{colors.ink}"
     height: "{spacing.tree-row}"
-  line-badge:
+  line-symbol:
     backgroundColor: "{colors.line-2}"
-    textColor: "{colors.reading-ground}"
     rounded: "{rounded.full}"
-    size: "18px"
+    size: "12px"
   code-block:
     backgroundColor: "{colors.code-ground}"
     textColor: "{colors.ink}"
@@ -116,7 +114,7 @@ Around that map sits a calm reading column modelled on GitHub-style Markdown: a 
 The app is Windows-native in feel: Segoe UI Variable throughout, Cascadia Code for code, a custom 42px title bar drawn as a dark navy sign band, and Windows caption buttons.
 
 **Key Characteristics:**
-- Nine Seoul-metro line colours, one per top-level folder; line 1 belongs to files at the root.
+- Nine Seoul-metro line colours, one per top-level folder, shown as plain coloured symbols; the first colour belongs to files at the root.
 - Line form carries state: solid behind the reader, dashed ahead, a white ring for "you are here".
 - A dark navy sign band above a cool grey panel and a white reading ground.
 - Flat surfaces; depth comes from tone and rules, never shadows.
@@ -127,7 +125,7 @@ The app is Windows-native in feel: Segoe UI Variable throughout, Cascadia Code f
 A neutral, cool-grey world in which the only saturated colours are the transit lines and the GitHub alert set.
 
 ### Primary
-- **The nine line colours** (line-1 to line-9): territory markers. Each top-level folder takes the next line in order (2 to 9, then wrapping); root-level files are line 1. A line colour appears in the folder's badge, its 2px tree guides, its file stops, the route segments, the outline's solid track, the 3px progress line and the done task checkboxes. In the dark theme each has a brighter twin (for example line 1 becomes #4c8dff) and its ink flips to near-black.
+- **The nine line colours** (line-1 to line-9): territory markers. Each top-level folder takes the next line in order (2 to 9, then wrapping); root-level files are line 1. A line colour appears in the folder's 12px symbol, its 2px trunk line, its file stops, the branch to the open file, the route segments, the outline's solid track and the done task checkboxes. Lines carry no numbers: the order of colours is internal. In the dark theme each has a brighter twin (for example line 1 becomes #4c8dff) and its ink flips to near-black.
 
 ### Neutral
 - **Sign Navy** (sign-navy): the title-bar sign band; in dark theme it deepens to #080b0f. Also the light theme's primary button.
@@ -145,7 +143,7 @@ A neutral, cool-grey world in which the only saturated colours are the transit l
 ### Named Rules
 **The Territory Rule.** A line colour says where a file lives, never what state it is in. State is carried by form (solid, dashed, ring), so a reader can tell "read" from "ahead" without telling green from orange.
 
-**The Two Voices Rule.** Inside the reading column, the only colours are link blue, the alert set and syntax highlighting. Line colour enters the column only through the meta-row badge and done checkboxes.
+**The Two Voices Rule.** Inside the reading column, the only colours are link blue, the alert set and syntax highlighting. Line colour enters the column only through the meta-row symbol and done checkboxes.
 
 ## Typography
 
@@ -168,7 +166,7 @@ A neutral, cool-grey world in which the only saturated colours are the transit l
 
 ## Layout
 
-A three-column window under a 42px sign band: a resizable sidebar (284px default, 200px to 520px), a flexible document pane, and a 248px outline. The outline column disappears when a document has fewer than two outline stops and below 1100px window width. The document pane scrolls on its own with 44px top, 56px side and 120px bottom padding (32px / 28px / 96px below 900px); its content is a centred 46rem column. Tree rows are 29px tall and indent 16px per level, with each level's line guide drawn at its indent. Spacing follows the reading column's rem rhythm inside documents (paragraph gap 1.05rem, h2 top margin 2.7rem) and fixed pixels in the chrome.
+A three-column window under a 42px sign band (ring logo, route breadcrumb, theme toggle, caption buttons): a resizable sidebar (284px default, 200px to 520px), a flexible document pane, and a 248px outline. The outline column disappears when a document has fewer than two outline stops and below 1100px window width. The document pane scrolls on its own with 44px top, 56px side and 120px bottom padding (32px / 28px / 96px below 900px); its content is a centred 46rem column. Tree rows are 29px tall and indent 16px per level, with each level's line guide drawn at its indent. Spacing follows the reading column's rem rhythm inside documents (paragraph gap 1.05rem, h2 top margin 2.7rem) and fixed pixels in the chrome.
 
 ## Elevation & Depth
 
@@ -179,28 +177,29 @@ Flat. There are no shadows anywhere. Depth comes from three tonal planes: the da
 
 ## Shapes
 
-Gently rounded rectangles for controls and blocks (6px for buttons, inputs and title-bar buttons; 8px for code blocks and alerts; 4px to 5px for images, keyboard keys and inline code). Everything that belongs to the map is a circle: line badges (18px), station dots (10px hollow, 2px line border), the transfer ring (15px, 3.5px border, white centre), route dots and outline stops. Lines are straight 2px to 3px strokes with rounded ends.
+Gently rounded rectangles for controls and blocks (6px for buttons, inputs and title-bar buttons; 8px for code blocks and alerts; 4px to 5px for images, keyboard keys and inline code). Everything that belongs to the map is a circle: line symbols (12px), station dots (10px hollow, 2px line border), the transfer ring (15px, 3.5px border, white centre), route dots and outline stops. Lines are straight 2px to 3px strokes with rounded ends.
 
 ## Components
 
 ### Buttons
 - **Shape:** gently rounded (6px).
 - **Primary:** Sign Navy with Sign Ink, 36px tall, 16px side padding, 14px/600 with a leading 16px icon; in dark theme the ground lifts to #263247. Used for the empty-state "Open folder".
-- **Sign buttons:** text or icon buttons on the sign band, Muted Sign Ink at rest, a 9% white fill and full Sign Ink on hover (0.15s).
+- **Sign buttons:** icon buttons on the sign band (the theme toggle), Muted Sign Ink at rest, a 9% white fill and full Sign Ink on hover (0.15s).
+- **Sidebar icon button:** the Open folder button, a 28px icon button at the right end of the folder name row; secondary ink at rest, the hover fill on hover.
 - **Caption buttons:** 46px wide Windows controls; close turns #c42b1c on hover.
 
 ### Inputs / Fields
 - **Filter:** 32px field on the reading ground with a 1px rule border, 6px radius, a 14px search icon; the border turns link blue on focus. Hidden until a folder is open.
 
 ### Navigation
-- **Line-map tree:** folders show a chevron, and at the top level a numbered line badge; files show a hollow station dot on the line guide. The open file gets a 13% line-colour wash, 620 weight and the white transfer ring. Filter matches are marked with a 28% line-colour highlight.
+- **Line-map tree:** folders show a chevron, and at the top level a 12px line symbol. One 2px trunk runs down the left edge of each top-level folder; nested folders add no lines of their own. Files show a hollow station dot at their indent (on the trunk for the first level). The open file gets a horizontal branch from the trunk to its dot, a 13% line-colour wash, 620 weight and the white transfer ring. Filter matches are marked with a 28% line-colour highlight.
 - **Route breadcrumb:** in the sign band, root dot, 30px line segments in the file's line colour, folder stops, and the current file as a white-centred ring on its line with its name in Sign Ink; long paths collapse to root, "…", and the last three stops.
 
 ### Outline route (signature)
 A vertical route of stops for h2 and h3: the track is dashed in strong rule colour ahead of the reader and solid line colour behind; passed stops fill with the line colour; the current stop is a 14px transfer ring and its label turns ink at 620. h3 stops are smaller and indented. A "Last read here · 3 days ago" flag with a bookmark icon sits under the stop where the reader left off in an earlier session.
 
-### Reading progress and meta row
-A 3px line in the folder's colour across the top of the document pane grows with scroll position. Above the h1, a meta row shows the line badge and folder name, front-matter status in line colour, the updated date and the read time, separated by 3px dots; remaining front-matter keys sit in a collapsible table below it.
+### Meta row
+Above the h1, a meta row shows the line symbol and folder name, front-matter status in line colour, the updated date and the read time, separated by 3px dots; remaining front-matter keys sit in a collapsible table below it.
 
 ### Alerts
 GitHub alerts (note, tip, important, warning, caution) as 8px-rounded blocks on a 9% tint of their colour, an 18px icon, and a coloured title. No border.
@@ -208,11 +207,14 @@ GitHub alerts (note, tip, important, warning, caution) as 8px-rounded blocks on 
 ### Code blocks
 Code ground, 1px rule border, 8px radius, 16px by 18px padding, with the language label in tertiary ink at the top right. Syntax colours follow GitHub's light and dark palettes.
 
+### Diagrams
+Text diagrams (code blocks with box-drawing characters) tighten to a 1.16 line height so vertical lines join, and every wide character fills exactly two columns. Mermaid blocks become a figure with a 1px rule border and 8px radius, drawn with Mermaid's base theme coloured from the app tokens: code-ground nodes, strong-rule borders, tertiary-ink edges, ink text at 15px.
+
 ## Do's and Don'ts
 
 ### Do:
 - **Do** give each new top-level folder the next line colour in order and keep line 1 for root files.
-- **Do** show progress and position with line form: solid behind, dashed ahead, a white ring for the current stop.
+- **Do** show progress and position with line form in the outline only: solid behind, dashed ahead, a white ring for the current stop.
 - **Do** keep the reading column at 46rem with 16px/1.72 body text.
 - **Do** pair every line colour with its dark-theme twin when adding a surface that uses it.
 - **Do** keep Windows-native type: Segoe UI Variable for text, Cascadia Code for code with ligatures off.
@@ -220,5 +222,7 @@ Code ground, 1px rule border, 8px radius, 16px by 18px padding, with the languag
 ### Don't:
 - **Don't** use a line colour to signal state (unread, changed, error); use form or text.
 - **Don't** add shadows or lifted cards; separate planes with tone and 1px rules.
-- **Don't** bring line colour into document prose beyond the meta badge and done checkboxes.
+- **Don't** bring line colour into document prose beyond the meta symbol and done checkboxes.
+- **Don't** stack a guide line per nesting level in the tree; one trunk per top-level folder, and a branch for the open file.
+- **Don't** put numbers on line symbols.
 - **Don't** show controls that have nothing to act on, such as the filter before a folder is open.

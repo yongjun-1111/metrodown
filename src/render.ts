@@ -51,12 +51,25 @@ export function slugify(text: string): string {
     .replace(/\s/g, "-");
 }
 
+// East Asian wide characters (Hangul, CJK, full-width forms, emoji) occupy two columns in
+// the text editors and terminals where diagrams are drawn.
+const WIDE = /[ᄀ-ᅟ⺀-〾ぁ-㏿㐀-䶿一-鿿ꥠ-꥿가-힣豈-﫿︰-﹏＀-｠￠-￦\u{1f300}-\u{1f64f}\u{1f900}-\u{1f9ff}\u{20000}-\u{3fffd}]/gu;
+const BOX_DRAWING = /[─-╿]/;
+
+/**
+ * Puts each wide character in a two-column cell so text diagrams keep their columns whatever
+ * font supplies the glyph. Safe on highlighted HTML: markup and entities are ASCII only.
+ */
+const gridCells = (html: string) => html.replace(WIDE, '<span class="w">$&</span>');
+
 const md: MarkdownIt = markdownit({
   html: true,
   linkify: true,
   typographer: false,
   highlight(code, info) {
     const lang = (info || "").trim().split(/\s+/)[0].toLowerCase();
+    // Rendered into a picture after sanitizing, see reader.ts; the source stays readable meanwhile.
+    if (lang === "mermaid") return `<pre data-lang="mermaid" class="mermaid-src"><code>${md.utils.escapeHtml(code)}</code></pre>\n`;
     let body = md.utils.escapeHtml(code);
     if (lang && hljs.getLanguage(lang)) {
       try {
@@ -66,7 +79,8 @@ const md: MarkdownIt = markdownit({
       }
     }
     const label = lang ? ` data-lang="${md.utils.escapeHtml(lang)}"` : "";
-    return `<pre${label}><code class="hljs">${body}</code></pre>\n`;
+    const diagram = BOX_DRAWING.test(code) ? ' class="diagram"' : "";
+    return `<pre${label}${diagram}><code class="hljs">${gridCells(body)}</code></pre>\n`;
   },
 });
 

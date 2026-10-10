@@ -78,22 +78,29 @@ function highlight(name: string, q: string): string {
   return escapeHtml(name.slice(0, i)) + "<mark>" + escapeHtml(name.slice(i, i + q.length)) + "</mark>" + escapeHtml(name.slice(i + q.length));
 }
 
+// The line runs down the left edge of each top-level folder; files deeper down sit beside it,
+// and the open file is joined to it by a branch.
+const TRUNK_X = 20;
+const indent = (depth: number) => 12 + depth * 16;
+
 function rowHtml({ node, depth, line }: Row, index: number, q: string): string {
   const isDir = !!node.children;
-  let guides = "";
-  for (let k = 0; k < (isDir ? depth : Math.max(depth, 1)); k++) guides += `<span class="g" style="left:${12 + k * 16 + 7}px"></span>`;
   const attrs = `role="treeitem" aria-level="${depth + 1}" tabindex="${index === focusIndex ? 0 : -1}" data-i="${index}"`;
+  const trunk = isDir && depth === 0 ? "" : '<span class="trunk"></span>';
   if (isDir) {
     const open = isOpen(node, q);
-    const badge = depth === 0 ? `<span class="badge">${line}</span>` : "";
-    return `<div class="row dir l${line}${open ? " open" : ""}" ${attrs} aria-expanded="${open}" style="padding-left:${12 + depth * 16}px">${guides}<span class="chev">${svg("chevron", 14, 2)}</span>${badge}<span class="nm">${escapeHtml(node.name)}</span></div>`;
+    const symbol = depth === 0 ? '<span class="badge"></span>' : "";
+    return `<div class="row dir l${line}${open ? " open" : ""}" ${attrs} aria-expanded="${open}" style="padding-left:${indent(depth)}px">${trunk}<span class="chev">${svg("chevron", 14, 2)}</span>${symbol}<span class="nm">${escapeHtml(node.name)}</span></div>`;
   }
   const active = state.current !== null && samePath(node.path, state.current);
-  return `<div class="row file l${line}${active ? " active" : ""}" ${attrs} aria-selected="${active}" title="${escapeHtml(node.name)}" style="padding-left:${12 + Math.max(depth, 1) * 16 + 6}px">${guides}<span class="stop" style="left:${12 + Math.max(depth - 1, 0) * 16 + 8}px"></span><span class="nm">${highlight(stripExt(node.name), q)}</span></div>`;
+  const stopX = indent(Math.max(depth - 1, 0)) + 8;
+  const branch = active && stopX > TRUNK_X ? `<span class="branch" style="width:${stopX - TRUNK_X}px"></span>` : "";
+  return `<div class="row file l${line}${active ? " active" : ""}" ${attrs} aria-selected="${active}" title="${escapeHtml(node.name)}" style="padding-left:${indent(Math.max(depth, 1)) + 6}px">${trunk}${branch}<span class="stop" style="left:${stopX}px"></span><span class="nm">${highlight(stripExt(node.name), q)}</span></div>`;
 }
 
 export function renderTree() {
   el.filterBox.hidden = !state.root;
+  el.rootName.classList.toggle("muted", !state.root);
   if (!state.root) {
     el.tree.innerHTML = "";
     el.sideFoot.textContent = "";
