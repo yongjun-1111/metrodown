@@ -58,6 +58,10 @@ Editing or saving, sync, plugins, export, macOS/Linux builds, footnotes and KaTe
    restores silently.
 10. The open file reloads when it changes on disk, keeping the scroll position.
 11. Theme follows Windows light/dark; a title-bar toggle overrides it.
+12. The installer registers `.md` / `.markdown` with Windows ("Open with", or the default app
+    once the user picks it). Opening a file from Explorer or a terminal while the viewer runs
+    hands it to the existing window (single instance) instead of starting a second one; Back
+    returns to what was open before.
 
 ## Performance budget
 

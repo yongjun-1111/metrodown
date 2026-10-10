@@ -8,6 +8,12 @@ A lightweight, read-only Markdown viewer for Windows.
   syntax-highlighted code, tables, task lists and a table of contents.
 - No editing. The viewer never modifies your files.
 
+## Opening files from Explorer
+
+The installer registers `.md` and `.markdown`. To make md-viewer the default, right-click a
+`.md` file → Open with → Choose another app → md-viewer → Always. A file opened while the viewer
+is running goes to the existing window. From a terminal: `md-viewer.exe path	oile.md`.
+
 ## Build
 
 Requires Node 20.19+ (or 22.12+), the Rust toolchain and the Windows SDK. From PowerShell:

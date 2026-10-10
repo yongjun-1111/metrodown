@@ -204,18 +204,35 @@ fn project_root(path: String) -> String {
     project_root_for(Path::new(&path)).to_string_lossy().into_owned()
 }
 
-/// The folder or file passed on the command line, e.g. from "Open with".
-#[tauri::command]
-fn launch_path() -> Option<String> {
-    std::env::args_os()
+/// The first existing path among command-line arguments, made absolute against `cwd`.
+fn path_from_args<I: IntoIterator<Item = String>>(args: I, cwd: &Path) -> Option<String> {
+    args.into_iter()
         .skip(1)
-        .map(PathBuf::from)
+        .map(|a| cwd.join(a))
         .find(|p| p.exists())
         .map(|p| std::path::absolute(&p).unwrap_or(p).to_string_lossy().into_owned())
 }
 
+/// The folder or file passed on the command line, e.g. from "Open with".
+#[tauri::command]
+fn launch_path() -> Option<String> {
+    let cwd = std::env::current_dir().unwrap_or_default();
+    path_from_args(std::env::args_os().map(|a| a.to_string_lossy().into_owned()), &cwd)
+}
+
 fn main() {
     tauri::Builder::default()
+        // A second launch (double-clicking a .md file, a link from a terminal) hands its path to
+        // the window that is already open instead of starting another app.
+        .plugin(tauri_plugin_single_instance::init(|app, args, cwd| {
+            if let Some(window) = app.get_webview_window("main") {
+                let _ = window.unminimize();
+                let _ = window.set_focus();
+            }
+            if let Some(path) = path_from_args(args, Path::new(&cwd)) {
+                let _ = app.emit("open-path", path);
+            }
+        }))
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .manage(Watch(Mutex::new(None)))
@@ -317,6 +334,17 @@ mod tests {
         assert_eq!(project_root_for(&t.0.join("docs/adr/0001.md")), t.0);
         let outside = std::env::temp_dir().join("mdv-no-repo-file.md");
         assert_eq!(project_root_for(&outside), std::env::temp_dir());
+    }
+
+    #[test]
+    fn launch_arguments_resolve_against_the_callers_folder() {
+        let t = TempTree::new("args");
+        t.file("docs/a.md");
+        let args = |v: &[&str]| v.iter().map(|s| s.to_string()).collect::<Vec<_>>();
+        let found = path_from_args(args(&["md-viewer.exe", "docs\\a.md"]), &t.0).unwrap();
+        assert_eq!(PathBuf::from(found), t.0.join("docs\\a.md"));
+        assert_eq!(path_from_args(args(&["md-viewer.exe", "missing.md"]), &t.0), None);
+        assert_eq!(path_from_args(args(&["md-viewer.exe"]), &t.0), None);
     }
 
     #[test]

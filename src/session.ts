@@ -190,14 +190,17 @@ export async function pickFolder() {
   if (typeof picked === "string") await openRoot(picked);
 }
 
-/** Opens a folder, or a Markdown file inside the current root or else inside its own project. */
-export async function openPath(p: string) {
+/**
+ * Opens a folder, or a Markdown file inside the current root or else inside its own project.
+ * `keepHistory` lets Back return to what was open before (files handed over by Windows).
+ */
+export async function openPath(p: string, keepHistory = false) {
   const kind = await invoke<string>("path_kind", { path: p });
   if (kind === "dir") await openRoot(p);
   else if (kind === "missing") showError("This path no longer exists", p);
   else if (isMarkdown(p)) {
     if (inRoot(p)) await openFile(p);
-    else await openRoot(await invoke<string>("project_root", { path: p }), { file: p });
+    else await openRoot(await invoke<string>("project_root", { path: p }), { file: p, keepHistory });
   }
 }
 
@@ -249,6 +252,9 @@ export function initSession() {
       reloadTimer = window.setTimeout(() => reloadCurrent(true), 150);
     }
   });
+
+  // A .md file opened from Explorer or a terminal while the app is running (single instance).
+  void listen<string>("open-path", ({ payload }) => void openPath(payload, true));
 
   void getCurrentWebview().onDragDropEvent((e) => {
     if (e.payload.type === "drop" && e.payload.paths.length) void openPath(e.payload.paths[0]);
