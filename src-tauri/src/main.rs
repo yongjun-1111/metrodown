@@ -54,9 +54,15 @@ fn is_skipped_name(name: &str) -> bool {
     SKIP_DIRS.iter().any(|s| s.eq_ignore_ascii_case(name))
 }
 
-fn in_skipped_dir(path: &Path) -> bool {
-    path.components()
-        .any(|c| c.as_os_str().to_str().map(is_skipped_name).unwrap_or(false))
+/// Whether a watcher event path should reach the page. Only the part below the root is checked
+/// for skipped folders, so a root that itself lives under e.g. `dist` still works. Structural
+/// events also pass for folders (or paths already gone), whatever their names look like.
+fn is_relevant(root: &Path, path: &Path, structural: bool) -> bool {
+    let rel = path.strip_prefix(root).unwrap_or(path);
+    let skipped = rel
+        .components()
+        .any(|c| c.as_os_str().to_str().map(is_skipped_name).unwrap_or(false));
+    !skipped && (is_markdown(path) || (structural && !path.is_file()))
 }
 
 /// Builds the Markdown-only tree: folders first, then files, both sorted by name.
@@ -146,22 +152,22 @@ async fn read_file(path: String) -> Result<FileData, String> {
 fn watch_root(root: String, app: AppHandle, state: State<Watch>) -> Result<(), String> {
     let mut slot = state.0.lock().map_err(|e| e.to_string())?;
     *slot = None;
+    let root_path = PathBuf::from(&root);
     let mut watcher = notify::recommended_watcher(move |res: notify::Result<notify::Event>| {
         let Ok(event) = res else { return };
-        let paths: Vec<String> = event
-            .paths
-            .iter()
-            .filter(|p| !in_skipped_dir(p) && (is_markdown(p) || p.extension().is_none()))
-            .map(|p| p.to_string_lossy().into_owned())
-            .collect();
-        if paths.is_empty() {
-            return;
-        }
         let structural = matches!(
             event.kind,
             EventKind::Create(_) | EventKind::Remove(_) | EventKind::Modify(ModifyKind::Name(_))
         );
-        let _ = app.emit("fs-change", FsChange { paths, structural });
+        let paths: Vec<String> = event
+            .paths
+            .iter()
+            .filter(|p| is_relevant(&root_path, p, structural))
+            .map(|p| p.to_string_lossy().into_owned())
+            .collect();
+        if !paths.is_empty() {
+            let _ = app.emit("fs-change", FsChange { paths, structural });
+        }
     })
     .map_err(|e| e.to_string())?;
     watcher
@@ -319,11 +325,21 @@ mod tests {
     }
 
     #[test]
-    fn markdown_detection_and_skip_paths() {
+    fn markdown_detection() {
         assert!(is_markdown(Path::new("a/b.md")));
         assert!(is_markdown(Path::new("a/b.Markdown")));
         assert!(!is_markdown(Path::new("a/b.mdx")));
-        assert!(in_skipped_dir(Path::new("D:\\repo\\node_modules\\x\\a.md")));
-        assert!(!in_skipped_dir(Path::new("D:\\repo\\docs\\a.md")));
+    }
+
+    #[test]
+    fn watcher_relevance() {
+        let root = Path::new("D:\\dist\\repo");
+        let rel = |p: &str, structural| is_relevant(root, &root.join(p), structural);
+        assert!(rel("docs\\a.md", false));
+        assert!(!rel("node_modules\\x\\a.md", false));
+        assert!(!rel("notes.txt", false));
+        // A renamed or removed folder with a dot in its name still triggers a rescan.
+        assert!(rel("docs.v1", true));
+        assert!(!rel("docs.v1", false));
     }
 }

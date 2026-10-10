@@ -8,7 +8,7 @@
     <script type="module" src="./main.ts"></script>
   </head>
   <body>
-    <div class="win" id="app">
+    <div class="win">
       <header class="titlebar" data-tauri-drag-region>
         <div class="brand" data-tauri-drag-region><span class="logo" data-tauri-drag-region></span>md-viewer</div>
         <nav class="route" id="route" aria-label="Current path" data-tauri-drag-region></nav>
@@ -23,11 +23,11 @@
         </div>
       </header>
       <div class="body" id="body">
-        <aside class="side" id="side">
+        <aside class="side">
           <div class="side-head">
             <div class="root-name" id="rootName"></div>
             <div class="root-path" id="rootPath"></div>
-            <label class="filter" id="filterBox"><span id="filterIcon"></span><input id="filter" type="search" placeholder="Filter files" spellcheck="false" autocomplete="off" aria-label="Filter files (Ctrl+P)" /></label>
+            <label class="filter" id="filterBox" hidden><span id="filterIcon"></span><input id="filter" type="search" placeholder="Filter files" spellcheck="false" autocomplete="off" aria-label="Filter files (Ctrl+P)" /></label>
           </div>
           <div class="tree-scroll"><div class="tree" id="tree" role="tree" aria-label="Markdown files"></div></div>
           <div class="side-foot" id="sideFoot"></div>
@@ -37,7 +37,7 @@
           <div class="progress" id="progress"></div>
           <main class="doc-scroll" id="docScroll" tabindex="-1"><div id="doc"></div></main>
         </div>
-        <aside class="outline" id="outline">
+        <aside class="outline">
           <p class="ol-head">On this page</p>
           <ol class="rtoc" id="toc"></ol>
         </aside>

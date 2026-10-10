@@ -42,10 +42,15 @@ Editing or saving, sync, plugins, export, macOS/Linux builds, footnotes, Mermaid
    plus a collapsible table when it has other keys.
 6. Relative links to other Markdown files open in the viewer; `Alt+Left` / `Alt+Right` move
    through history. External links open in the default browser. `#anchor` links scroll.
-7. The outline lists h2/h3 headings; sections already passed are solid, the current one is
+   A link to a Markdown file outside the open folder opens that file's project (nearest
+   folder with `.git`, else its folder), so the tree, route and watcher always cover it.
+7. The outline lists h2/h3 headings when there are at least two (one stop is no route, so the
+   column goes back to the document); sections already passed are solid, the current one is
    a ring, sections ahead are dashed. Clicking a stop scrolls to it.
 8. A 3px progress line in the folder's colour shows how far through the document the reader is.
-9. Reopening a file restores its last scroll position and flags that section "Last read here".
+9. Reopening a file restores its last scroll position. When the position comes from an earlier
+   session, that section is flagged "Last read here"; switching between files in one sitting
+   restores silently.
 10. The open file reloads when it changes on disk, keeping the scroll position.
 11. Theme follows Windows light/dark; a title-bar toggle overrides it.
 
@@ -71,7 +76,7 @@ Editing or saving, sync, plugins, export, macOS/Linux builds, footnotes, Mermaid
 ## Tickets (local tracker)
 
 1. Scaffold Tauri 2 + Vite + TS app, custom title bar, window state. (blocks all)
-2. Backend: `scan_tree`, `read_text`, file watch events, tests. (after 1)
+2. Backend: `scan_tree`, `read_file`, file watch events, tests. (after 1)
 3. Renderer: markdown-it pipeline, sanitizer, highlighting, front matter, alerts, fixture. (after 1)
 4. Shell UI: line-map tree, filter, route breadcrumb, theme. (after 2)
 5. Reading UI: outline route, progress, last-read flag, link navigation and history. (after 3, 4)

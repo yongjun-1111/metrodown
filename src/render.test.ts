@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { renderMarkdown, slugify } from "./render";
 import { parseFrontMatter, splitFrontMatter } from "./frontmatter";
-import { dirname, relativeParts, resolvePath } from "./paths";
+import { dirname, relativeParts, resolvePath, splitLink } from "./paths";
 
 describe("renderMarkdown", () => {
   it("renders GFM tables, strikethrough and links", () => {
@@ -50,6 +50,11 @@ describe("renderMarkdown", () => {
     expect(headings[3].level).toBe(3);
   });
 
+  it("never reuses a heading id, even when a heading text looks like a suffixed id", () => {
+    const { headings } = renderMarkdown("## a\n## a\n## a-1");
+    expect(headings.map((h) => h.id)).toEqual(["a", "a-1", "a-1-1"]);
+  });
+
   it("keeps Korean text in slugs", () => {
     expect(slugify("설치 방법!")).toBe("설치-방법");
   });
@@ -65,6 +70,14 @@ describe("front matter", () => {
   it("parses block lists and quotes", () => {
     expect(parseFrontMatter("owner: 'agent'\nlinks:\n  - one\n  - \"two\"")).toEqual({ owner: "agent", links: ["one", "two"] });
   });
+  it("treats # as a comment only outside quotes", () => {
+    expect(parseFrontMatter("status: \"Ready #1\"\nowner: agent # team\ntitle: Don't #x")).toEqual({
+      status: "Ready #1",
+      owner: "agent",
+      title: "Don't",
+    });
+    expect(parseFrontMatter('status: "Ready \\" #1"\ntitle: 5 " # comment')).toEqual({ status: 'Ready " #1', title: '5 "' });
+  });
   it("ignores documents without front matter", () => {
     expect(splitFrontMatter("# no").meta).toBeNull();
   });
@@ -76,6 +89,19 @@ describe("paths", () => {
     expect(resolvePath("D:\\repo\\docs", "../README.md")).toBe("D:\\repo\\README.md");
     expect(resolvePath("D:\\repo\\docs", "/tickets/a%20b.md", "D:\\repo")).toBe("D:\\repo\\tickets\\a b.md");
     expect(resolvePath("D:\\repo", "..\\..\\..\\x.md")).toBe("D:\\x.md");
+  });
+  it("keeps the UNC server and share when climbing with ..", () => {
+    expect(resolvePath("\\\\server\\share\\docs", "../../x.md")).toBe("\\\\server\\share\\x.md");
+  });
+  it("decodes every percent escape in a link path", () => {
+    expect(resolvePath("D:\\repo", "a%23b.md")).toBe("D:\\repo\\a#b.md");
+    expect(resolvePath("D:\\repo", "100%.md")).toBe("D:\\repo\\100%.md");
+  });
+  it("separates the path, query and fragment of a link", () => {
+    expect(splitLink("guide.md?mode=read#Set%20up")).toEqual({ path: "guide.md", hash: "Set up" });
+    expect(splitLink("a%23b.md")).toEqual({ path: "a%23b.md", hash: null });
+    expect(splitLink("#top")).toEqual({ path: "", hash: "top" });
+    expect(splitLink("a.md#one\ntwo")).toEqual({ path: "a.md", hash: "one\ntwo" });
   });
   it("finds parents and relative parts", () => {
     expect(dirname("C:\\a.md")).toBe("C:\\");

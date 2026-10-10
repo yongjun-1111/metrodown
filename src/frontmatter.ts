@@ -1,6 +1,29 @@
 export type FrontMatter = Record<string, string | string[]>;
 
-const unquote = (s: string): string => s.trim().replace(/^(['"])(.*)\1$/, "$2");
+function unquote(raw: string): string {
+  const s = raw.trim();
+  if (/^".*"$/.test(s)) return s.slice(1, -1).replace(/\\(["\\])/g, "$1");
+  if (/^'.*'$/.test(s)) return s.slice(1, -1).replace(/''/g, "'");
+  return s;
+}
+
+/** Drops a trailing "# comment". Only a value that starts with a quote is a quoted string. */
+function stripComment(line: string): string {
+  const open = /^\s*(?:-\s+|[A-Za-z0-9_.-]+\s*:\s*)(["'])/.exec(line);
+  let from = 0;
+  if (open) {
+    const q = open[1];
+    let i = open[0].length;
+    for (; i < line.length; i++) {
+      if (q === '"' && line[i] === "\\") i++;
+      else if (line[i] === q && !(q === "'" && line[i + 1] === "'")) break;
+      else if (line[i] === q) i++;
+    }
+    from = i + 1;
+  }
+  const comment = /\s#/.exec(line.slice(from));
+  return comment ? line.slice(0, from + comment.index) : line;
+}
 
 /**
  * Reads flat YAML front matter (`key: value`, inline `[a, b]` lists and `- item` lists).
@@ -10,7 +33,7 @@ export function parseFrontMatter(yaml: string): FrontMatter {
   const out: FrontMatter = {};
   let last: string | null = null;
   for (const raw of yaml.split(/\r?\n/)) {
-    const line = raw.replace(/\s+#.*$/, "");
+    const line = stripComment(raw);
     if (!line.trim()) continue;
     const item = /^\s*-\s+(.*)$/.exec(line);
     if (item && last) {

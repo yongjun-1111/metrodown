@@ -141,15 +141,15 @@ const inlineText = (tok: Token): string =>
 // Heading ids (for links and the outline) and the heading list.
 md.core.ruler.push("heading-ids", (state) => {
   const env = state.env as Env;
-  const seen = new Map<string, number>();
+  const used = new Set<string>();
   const t = state.tokens;
   for (let i = 0; i < t.length; i++) {
     if (t[i].type !== "heading_open") continue;
     const text = inlineText(t[i + 1]).trim();
     const base = slugify(text) || "section";
-    const n = seen.get(base) ?? 0;
-    seen.set(base, n + 1);
-    const id = n ? `${base}-${n}` : base;
+    let id = base;
+    for (let n = 1; used.has(id); n++) id = `${base}-${n}`;
+    used.add(id);
     t[i].attrSet("id", id);
     env.headings.push({ level: Number(t[i].tag.slice(1)), text, id });
   }

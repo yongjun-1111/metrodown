@@ -22,11 +22,13 @@ export function dirname(p: string): string {
 function collapse(p: string): string {
   const unc = p.startsWith("\\\\");
   const segs = (unc ? p.slice(2) : p).split("\\");
+  // ".." never climbs above the drive, or above the server and share of a UNC path.
+  const floor = unc ? 2 : 1;
   const out: string[] = [];
   for (const s of segs) {
     if (s === "" || s === ".") continue;
     if (s === "..") {
-      if (out.length > 1) out.pop();
+      if (out.length > floor) out.pop();
       continue;
     }
     out.push(s);
@@ -36,16 +38,23 @@ function collapse(p: string): string {
   return out.length === 1 && /^[a-zA-Z]:$/.test(out[0]) ? joined + "\\" : joined;
 }
 
+/** Percent-decodes a link part; text that is not valid escaping (e.g. "100%.md") stays as it is. */
 function safeDecode(s: string): string {
   try {
-    return decodeURI(s);
+    return decodeURIComponent(s);
   } catch {
     return s;
   }
 }
 
+/** Splits a link into its path and decoded fragment; the query is dropped. */
+export function splitLink(href: string): { path: string; hash: string | null } {
+  const m = /^([^?#]*)(?:\?[^#]*)?(?:#([\s\S]*))?$/.exec(href)!;
+  return { path: m[1], hash: m[2] === undefined ? null : safeDecode(m[2]) };
+}
+
 /**
- * Resolves a link target found in a document.
+ * Resolves the path part of a link found in a document.
  * Relative paths resolve against the document's folder; a leading slash means the opened root.
  */
 export function resolvePath(baseDir: string, target: string, root?: string | null): string {
