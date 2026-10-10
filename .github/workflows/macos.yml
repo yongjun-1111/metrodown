@@ -1,0 +1,37 @@
+# Builds the macOS app (Apple silicon, unsigned) and attaches the .dmg to the run.
+# Started by hand from the Actions tab, or by pushing a v* tag; macOS minutes are costly
+# on a private repository, so ordinary pushes do not build.
+name: macOS build
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - run: npm ci
+      - run: npm test
+      - run: npx tauri build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: md-viewer-macos
+          path: src-tauri/target/release/bundle/dmg/*.dmg
+          if-no-files-found: error

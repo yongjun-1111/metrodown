@@ -26,5 +26,7 @@ export const el = {
 
 export const appWindow = getCurrentWindow();
 
+export const isMac = navigator.userAgent.includes("Mac OS");
+
 export const escapeHtml = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);

@@ -1,7 +1,7 @@
 // The line map: the file tree in the sidebar and the route breadcrumb in the title bar.
 import { el, escapeHtml } from "./dom";
 import { svg } from "./icons";
-import { basename, relativeParts, samePath } from "./paths";
+import { basename, joinPath, relativeParts, samePath } from "./paths";
 import { state, type TreeNode } from "./state";
 import { store } from "./store";
 
@@ -47,8 +47,8 @@ function saveExpanded() {
 export function expandTo(path: string) {
   const parts = state.root ? relativeParts(state.root, path) : null;
   if (!parts) return;
-  let acc = state.root!.replace(/\\+$/, "");
-  for (const p of parts.slice(0, -1)) expanded.add(key((acc += "\\" + p)));
+  let acc = state.root!;
+  for (const p of parts.slice(0, -1)) expanded.add(key((acc = joinPath(acc, p))));
   saveExpanded();
 }
 

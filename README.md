@@ -1,6 +1,6 @@
 # md-viewer
 
-A lightweight, read-only Markdown viewer for Windows.
+A lightweight, read-only Markdown viewer for Windows and macOS.
 
 - Native desktop app (Tauri 2 + WebView2), built to start fast and stay small.
 - Left-side directory explorer for browsing a folder's Markdown files.
@@ -13,6 +13,13 @@ A lightweight, read-only Markdown viewer for Windows.
 The installer registers `.md` and `.markdown`. To make md-viewer the default, right-click a
 `.md` file → Open with → Choose another app → md-viewer → Always. A file opened while the viewer
 is running goes to the existing window. From a terminal: `md-viewer.exe path	oile.md`.
+
+## macOS
+
+Run the **macOS build** workflow from the repository's Actions tab (or push a `v*` tag) and
+download the `md-viewer-macos` artifact. The app is unsigned: the first time, right-click
+md-viewer.app → Open, or allow it in System Settings → Privacy & Security. To make it the
+default for Markdown, Finder → a `.md` file → Get Info → Open with → md-viewer → Change All.
 
 ## Build
 

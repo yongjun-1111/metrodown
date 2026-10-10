@@ -1,6 +1,6 @@
 // Window chrome: theme, title-bar buttons, sidebar width and app-wide keys.
 import { drawDiagrams } from "./diagrams";
-import { appWindow, el } from "./dom";
+import { appWindow, el, isMac } from "./dom";
 import { svg } from "./icons";
 import { saveReadPosition } from "./reader";
 import { goHistory, pickFolder, reloadCurrent } from "./session";
@@ -52,8 +52,8 @@ function onKey(e: KeyboardEvent) {
   const k = e.key.toLowerCase();
   if (ctrl && k === "o") void pickFolder();
   else if (ctrl && (k === "p" || (e.shiftKey && k === "f"))) focusFilter();
-  else if (e.altKey && e.key === "ArrowLeft") void goHistory(-1);
-  else if (e.altKey && e.key === "ArrowRight") void goHistory(1);
+  else if ((e.altKey && e.key === "ArrowLeft") || (e.metaKey && e.key === "[")) void goHistory(-1);
+  else if ((e.altKey && e.key === "ArrowRight") || (e.metaKey && e.key === "]")) void goHistory(1);
   else if (e.key === "F5" || (ctrl && k === "r")) reloadCurrent();
   else return;
   e.preventDefault();
@@ -69,6 +69,11 @@ export function initShell() {
     applyTheme();
   });
 
+  if (isMac) {
+    document.documentElement.dataset.os = "mac";
+    el.openBtn.title = "Open folder (⌘O)";
+    el.filter.setAttribute("aria-label", "Filter files (⌘P)");
+  }
   el.openBtn.innerHTML = svg("folderOpen", 16);
   el.openBtn.addEventListener("click", () => void pickFolder());
   el.wcMin.addEventListener("click", () => void appWindow.minimize());

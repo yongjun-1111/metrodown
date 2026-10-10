@@ -1,8 +1,8 @@
 /* md-viewer — "line map" direction. Every top-level folder is a transit line. */
 
 :root {
-  --ui: "Segoe UI Variable Text", "Segoe UI", "Malgun Gothic", system-ui, sans-serif;
-  --mono: "Cascadia Code", "Cascadia Mono", Consolas, "D2Coding", "Malgun Gothic", monospace;
+  --ui: "Segoe UI Variable Text", "Segoe UI", -apple-system, "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+  --mono: "Cascadia Code", "Cascadia Mono", Consolas, "SF Mono", Menlo, "D2Coding", "Malgun Gothic", "Apple SD Gothic Neo", monospace;
   --side-w: 284px;
 
   --bg: #ffffff;
@@ -143,6 +143,9 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .wc button { width: 46px; display: grid; place-items: center; color: var(--sign-ink); opacity: 0.85; }
 .wc button:hover { background: rgba(255, 255, 255, 0.1); opacity: 1; }
 .wc button.close:hover { background: #c42b1c; color: #fff; }
+/* macOS draws its own window buttons at the left of the bar. */
+[data-os="mac"] .titlebar { padding-left: 84px; padding-right: 10px; }
+[data-os="mac"] .wc { display: none; }
 
 .body { display: grid; grid-template-columns: var(--side-w) minmax(0, 1fr) 248px; min-height: 0; }
 .body.no-outline { grid-template-columns: var(--side-w) minmax(0, 1fr) 0; }

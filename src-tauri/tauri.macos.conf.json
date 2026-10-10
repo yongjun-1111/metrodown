@@ -1,0 +1,25 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "md-viewer",
+        "width": 1320,
+        "height": 860,
+        "minWidth": 720,
+        "minHeight": 480,
+        "center": true,
+        "decorations": true,
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true,
+        "trafficLightPosition": { "x": 16, "y": 14 },
+        "visible": false,
+        "zoomHotkeysEnabled": true
+      }
+    ]
+  },
+  "bundle": {
+    "targets": ["app", "dmg"]
+  }
+}

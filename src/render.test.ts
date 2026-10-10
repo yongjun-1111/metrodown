@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { renderMarkdown, slugify } from "./render";
 import { parseFrontMatter, splitFrontMatter } from "./frontmatter";
-import { dirname, relativeParts, resolvePath, splitLink } from "./paths";
+import { basename, dirname, joinPath, relativeParts, resolvePath, rootOf, splitLink } from "./paths";
 
 describe("renderMarkdown", () => {
   it("renders GFM tables, strikethrough and links", () => {
@@ -120,5 +120,25 @@ describe("paths", () => {
     expect(dirname("D:\\repo\\docs\\a.md")).toBe("D:\\repo\\docs");
     expect(relativeParts("D:\\Repo", "d:\\repo\\docs\\a.md")).toEqual(["docs", "a.md"]);
     expect(relativeParts("D:\\repo", "D:\\repository\\a.md")).toBeNull();
+  });
+
+  it("handles macOS paths with forward slashes", () => {
+    expect(resolvePath("/Users/me/repo/docs", "../README.md")).toBe("/Users/me/repo/README.md");
+    expect(resolvePath("/Users/me/repo/docs", "/guide/a.md", "/Users/me/repo")).toBe("/Users/me/repo/guide/a.md");
+    expect(resolvePath("/Users/me", "../../../x.md")).toBe("/x.md");
+    expect(dirname("/Users/me/a.md")).toBe("/Users/me");
+    expect(dirname("/a.md")).toBe("/");
+    expect(basename("/Users/me/repo/")).toBe("repo");
+    expect(rootOf("/Users/me/repo/")).toBe("/Users/me/repo");
+    expect(rootOf("/")).toBe("/");
+    expect(joinPath("/Users/me", "docs")).toBe("/Users/me/docs");
+    expect(relativeParts("/Users/me/repo", "/Users/me/repo/docs/a.md")).toEqual(["docs", "a.md"]);
+    expect(relativeParts("/", "/a.md")).toEqual(["a.md"]);
+  });
+
+  it("keeps Windows roots and joins", () => {
+    expect(rootOf("D:\\")).toBe("D:\\");
+    expect(rootOf("D:\\repo\\")).toBe("D:\\repo");
+    expect(joinPath("D:\\", "docs")).toBe("D:\\docs");
   });
 });

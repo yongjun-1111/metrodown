@@ -6,7 +6,7 @@ import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { appWindow, el, escapeHtml } from "./dom";
 import { svg } from "./icons";
-import { basename, dirname, isMarkdown, norm, relativeParts, resolvePath, samePath, splitLink } from "./paths";
+import { basename, dirname, isMarkdown, relativeParts, resolvePath, rootOf, samePath, splitLink } from "./paths";
 import { saveReadPosition, scrollToId, showDocument, showMessage } from "./reader";
 import { state, type FileData, type TreeNode } from "./state";
 import { store } from "./store";
@@ -159,9 +159,7 @@ async function openRoot(root: string, target: OpenOpts & { file?: string; keepHi
   openGen++; // a read still in flight belongs to the previous folder
   scanGen++; // and so does a pending rescan
   saveReadPosition();
-  const trimmed = norm(root).replace(/\\+$/, "");
-  // A drive root keeps its separator: "D:" alone would mean the current folder on D.
-  state.root = /^[a-zA-Z]:$/.test(trimmed) ? `${trimmed}\\` : trimmed || norm(root);
+  state.root = rootOf(root);
   state.current = null;
   if (!target.keepHistory) {
     history.length = 0;

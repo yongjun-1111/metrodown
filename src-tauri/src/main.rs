@@ -213,29 +213,57 @@ fn path_from_args<I: IntoIterator<Item = String>>(args: I, cwd: &Path) -> Option
         .map(|p| std::path::absolute(&p).unwrap_or(p).to_string_lossy().into_owned())
 }
 
-/// The folder or file passed on the command line, e.g. from "Open with".
+/// A path the system asked to open before the page could listen for it.
+#[derive(Default)]
+struct Launch {
+    page_ready: bool,
+    pending: Option<String>,
+}
+
+/// The folder or file the app was started with: from the command line ("Open with" on
+/// Windows) or from macOS's open-file event.
 #[tauri::command]
-fn launch_path() -> Option<String> {
-    let cwd = std::env::current_dir().unwrap_or_default();
-    path_from_args(std::env::args_os().map(|a| a.to_string_lossy().into_owned()), &cwd)
+fn launch_path(launch: State<Mutex<Launch>>) -> Option<String> {
+    let mut launch = launch.lock().unwrap();
+    launch.page_ready = true;
+    launch.pending.take().or_else(|| {
+        let cwd = std::env::current_dir().unwrap_or_default();
+        path_from_args(std::env::args_os().map(|a| a.to_string_lossy().into_owned()), &cwd)
+    })
+}
+
+/// Brings the window forward and opens `path` in it, or keeps it for `launch_path` while
+/// the page is still loading.
+fn hand_over(app: &AppHandle, path: String) {
+    if let Some(window) = app.get_webview_window("main") {
+        let _ = window.unminimize();
+        let _ = window.set_focus();
+    }
+    let launch = app.state::<Mutex<Launch>>();
+    let mut launch = launch.lock().unwrap();
+    if launch.page_ready {
+        drop(launch);
+        let _ = app.emit("open-path", path);
+    } else {
+        launch.pending = Some(path);
+    }
 }
 
 fn main() {
-    tauri::Builder::default()
+    let app = tauri::Builder::default()
         // A second launch (double-clicking a .md file, a link from a terminal) hands its path to
         // the window that is already open instead of starting another app.
         .plugin(tauri_plugin_single_instance::init(|app, args, cwd| {
-            if let Some(window) = app.get_webview_window("main") {
-                let _ = window.unminimize();
-                let _ = window.set_focus();
-            }
             if let Some(path) = path_from_args(args, Path::new(&cwd)) {
-                let _ = app.emit("open-path", path);
+                hand_over(app, path);
+            } else if let Some(window) = app.get_webview_window("main") {
+                let _ = window.set_focus();
             }
         }))
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .manage(Watch(Mutex::new(None)))
+        .manage(Mutex::new(Launch::default()))
         .setup(|app| {
             // The page shows the window after its first frame. If the page never loads,
             // show it anyway so the app cannot stay running invisibly.
@@ -257,8 +285,17 @@ fn main() {
             project_root,
             launch_path
         ])
-        .run(tauri::generate_context!())
-        .expect("error while running md-viewer");
+        .build(tauri::generate_context!())
+        .expect("error while building md-viewer");
+    app.run(|_app, _event| {
+        // macOS passes files opened from Finder as an event, not as arguments.
+        #[cfg(target_os = "macos")]
+        if let tauri::RunEvent::Opened { urls } = _event {
+            if let Some(path) = urls.iter().find_map(|u| u.to_file_path().ok()) {
+                hand_over(_app, path.to_string_lossy().into_owned());
+            }
+        }
+    });
 }
 
 #[cfg(test)]
