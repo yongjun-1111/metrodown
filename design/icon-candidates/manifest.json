@@ -1,0 +1,122 @@
+[
+  {
+    "id": "01",
+    "slug": "fold-markdown",
+    "name": "폴드 마크다운",
+    "tag": "형식이 가장 명확한 정석형",
+    "color": "#225AC6",
+    "tint": "#E9F0FF",
+    "ink": "#173F8E",
+    "note": "접힌 종이 안에 M과 아래 화살표. Markdown 파일임을 직접 전달합니다.",
+    "file": "assets/01-fold-markdown-file.svg",
+    "app": "assets/01-fold-markdown-app.svg"
+  },
+  {
+    "id": "02",
+    "slug": "teal-margin",
+    "name": "틸 마진",
+    "tag": "여백과 본문을 강조한 문서형",
+    "color": "#087F83",
+    "tint": "#E4F4F2",
+    "ink": "#075D60",
+    "note": "짙은 청록색 여백과 세 줄의 본문. 글을 읽는 앱의 성격이 먼저 보입니다.",
+    "file": "assets/02-teal-margin-file.svg",
+    "app": "assets/02-teal-margin-app.svg"
+  },
+  {
+    "id": "03",
+    "slug": "metro-paper",
+    "name": "메트로 페이퍼",
+    "tag": "기존 정체성과 문서의 결합",
+    "color": "#1559A6",
+    "tint": "#EAF2FA",
+    "ink": "#12457D",
+    "note": "종이 윤곽 안에 파랑·초록 노선을 배치합니다. Metrodown의 개성을 유지합니다.",
+    "file": "assets/03-metro-paper-file.svg",
+    "app": "assets/03-metro-paper-app.svg"
+  },
+  {
+    "id": "04",
+    "slug": "reading-ribbon",
+    "name": "리딩 리본",
+    "tag": "읽기 전용 앱에 어울리는 책갈피",
+    "color": "#237449",
+    "tint": "#E9F3E9",
+    "ink": "#225A3A",
+    "note": "문서에 책갈피를 결합했습니다. 작성보다 읽기와 이어 읽기를 표현합니다.",
+    "file": "assets/04-reading-ribbon-file.svg",
+    "app": "assets/04-reading-ribbon-app.svg"
+  },
+  {
+    "id": "05",
+    "slug": "blue-cutout",
+    "name": "블루 컷아웃",
+    "tag": "작은 크기에서도 강한 실루엣",
+    "color": "#1760BF",
+    "tint": "#E8F0FC",
+    "ink": "#164882",
+    "note": "파란 문서 실루엣과 흰 M. 채워진 면으로 작은 아이콘에서도 존재감을 높입니다.",
+    "file": "assets/05-blue-cutout-file.svg",
+    "app": "assets/05-blue-cutout-app.svg"
+  },
+  {
+    "id": "06",
+    "slug": "amber-outline",
+    "name": "앰버 아웃라인",
+    "tag": "제목과 본문이 보이는 페이지",
+    "color": "#A15B12",
+    "tint": "#FCF1DC",
+    "ink": "#79420A",
+    "note": "제목과 문단의 위계가 보이는 따뜻한 색의 문서. 내용이 있는 페이지처럼 보입니다.",
+    "file": "assets/06-amber-outline-file.svg",
+    "app": "assets/06-amber-outline-app.svg"
+  },
+  {
+    "id": "07",
+    "slug": "md-label",
+    "name": "MD 라벨",
+    "tag": "확장자를 직접 보여주는 배지",
+    "color": "#7453A3",
+    "tint": "#F0EBF8",
+    "ink": "#59387C",
+    "note": "문서 아래쪽에 MD 라벨을 붙였습니다. 파일 형식을 한눈에 구별할 수 있습니다.",
+    "file": "assets/07-md-label-file.svg",
+    "app": "assets/07-md-label-app.svg"
+  },
+  {
+    "id": "08",
+    "slug": "page-stack",
+    "name": "페이지 스택",
+    "tag": "여러 문서를 탐색하는 뷰어",
+    "color": "#127BA0",
+    "tint": "#E4F2F8",
+    "ink": "#115A73",
+    "note": "겹친 두 장의 문서로 탐색 기능을 표현합니다. 폴더 속 여러 문서를 읽는 앱에 맞습니다.",
+    "file": "assets/08-page-stack-file.svg",
+    "app": "assets/08-page-stack-app.svg"
+  },
+  {
+    "id": "09",
+    "slug": "coral-notebook",
+    "name": "코랄 노트",
+    "tag": "문서를 모아 읽는 노트형",
+    "color": "#B54B40",
+    "tint": "#FBECE7",
+    "ink": "#84392F",
+    "note": "왼쪽 제본과 본문으로 종이 노트를 연상시킵니다. 편안하고 친숙한 인상입니다.",
+    "file": "assets/09-coral-notebook-file.svg",
+    "app": "assets/09-coral-notebook-app.svg"
+  },
+  {
+    "id": "10",
+    "slug": "ink-fold",
+    "name": "잉크 폴드",
+    "tag": "선명한 윤곽과 한 가지 포인트",
+    "color": "#36495C",
+    "tint": "#EDF1F4",
+    "ink": "#293847",
+    "note": "짙은 잉크색 선과 주황색 접힘. 색에 덜 의존하고 문서의 기본 형태에 집중합니다.",
+    "file": "assets/10-ink-fold-file.svg",
+    "app": "assets/10-ink-fold-app.svg"
+  }
+]

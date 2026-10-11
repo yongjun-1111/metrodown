@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-11",
+  "candidateFamilies": 10,
+  "uniqueSvgVariants": 20,
+  "pngSizes": [
+    16,
+    24,
+    32,
+    48,
+    256
+  ],
+  "contrast": [
+    {
+      "id": "01",
+      "primaryOnWhite": 6.28
+    },
+    {
+      "id": "02",
+      "primaryOnWhite": 4.8
+    },
+    {
+      "id": "03",
+      "primaryOnWhite": 6.97
+    },
+    {
+      "id": "04",
+      "primaryOnWhite": 5.73
+    },
+    {
+      "id": "05",
+      "primaryOnWhite": 6.07
+    },
+    {
+      "id": "06",
+      "primaryOnWhite": 5.22
+    },
+    {
+      "id": "07",
+      "primaryOnWhite": 5.98
+    },
+    {
+      "id": "08",
+      "primaryOnWhite": 4.81
+    },
+    {
+      "id": "09",
+      "primaryOnWhite": 5.19
+    },
+    {
+      "id": "10",
+      "primaryOnWhite": 9.27
+    }
+  ],
+  "checks": [
+    "20 unique SVGs",
+    "100 PNG dimensions and alpha channels",
+    "all static HTML asset references exist",
+    "HTML script parses",
+    "10 HTML candidate entries"
+  ],
+  "limits": [
+    "Browser interaction and responsive rendering were not tested: local file navigation was denied by browser policy.",
+    "Candidates not built, installed or checked in real Windows Explorer.",
+    "Color ratios concern primary ink against white, not accessibility certification of icon semantics."
+  ]
+}

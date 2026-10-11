@@ -166,7 +166,7 @@ A neutral, cool-grey world in which the only saturated colours are the transit l
 
 ## Layout
 
-A three-column window under a 42px sign band (ring logo, route breadcrumb, theme toggle, caption buttons): a resizable sidebar (284px default, 200px to 520px), a flexible document pane, and a 248px outline. The outline column disappears when a document has fewer than two outline stops and below 1100px window width; below 720px the sidebar goes too, leaving the document alone (the window can narrow to 400px). The document pane scrolls on its own with 44px top, 56px side and 120px bottom padding (32px / 28px / 96px below 900px, 24px / 18px / 80px below 520px); its content is a centred 46rem column. Tree rows are 29px tall; each depth has its own symbol column, 18px apart, starting at x = 40px (the top-level symbol's centre), with names 12px after it. Spacing follows the reading column's rem rhythm inside documents (paragraph gap 1.05rem, h2 top margin 2.7rem) and fixed pixels in the chrome.
+A three-column window under a 42px sign band (document logo, route breadcrumb, theme toggle, caption buttons): a resizable sidebar (284px default, 200px to 520px), a flexible document pane, and a 248px outline. The outline column disappears when a document has fewer than two outline stops and below 1100px window width; below 720px the sidebar goes too, leaving the document alone (the window can narrow to 400px). The document pane scrolls on its own with 44px top, 56px side and 120px bottom padding (32px / 28px / 96px below 900px, 24px / 18px / 80px below 520px); its content is a centred 46rem column. Tree rows are 29px tall; each depth has its own symbol column, 18px apart, starting at x = 40px (the top-level symbol's centre), with names 12px after it. Spacing follows the reading column's rem rhythm inside documents (paragraph gap 1.05rem, h2 top margin 2.7rem) and fixed pixels in the chrome.
 
 ## Elevation & Depth
 
@@ -226,3 +226,7 @@ Text diagrams (code blocks with box-drawing characters) tighten to a 1.16 line h
 - **Don't** stack a guide line per nesting level in the tree; one trunk per top-level folder, and a branch for the open file.
 - **Don't** put numbers on line symbols.
 - **Don't** show controls that have nothing to act on, such as the filter before a folder is open.
+
+## Application and document identity
+
+On 2026-10-11 the user selected candidate 05, Blue Cutout, for the app and associated Markdown documents. The identity uses a filled blue paper silhouette (#1760BF), a light folded corner (#A9CFFD), a white M/down-arrow mark and a pale text rule (#C6DEFF). The application version rests on a pale blue tile (#E8F0FC); the document version has transparent surroundings. Dedicated 16/24px SVG sources enlarge the paper and thicken the interior mark for Windows ICO frames. The title-bar logo uses this small app drawing. These identity colors do not replace the existing transit-line colors inside the reader. Source SVGs live under src-tauri; npm run icons regenerates the bundled assets.

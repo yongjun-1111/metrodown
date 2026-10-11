@@ -38,6 +38,12 @@
         "role": "Viewer",
         "mimeType": "text/markdown"
       }
-    ]
+    ],
+    "resources": {
+      "icons/document.icns": "document.icns"
+    },
+    "macOS": {
+      "infoPlist": "Info.plist"
+    }
   }
 }

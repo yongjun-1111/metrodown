@@ -124,7 +124,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   background: var(--sign); color: var(--sign-ink); user-select: none;
 }
 .brand { display: flex; align-items: center; gap: 9px; font-size: 13px; font-weight: 600; letter-spacing: 0.01em; white-space: nowrap; }
-.logo { width: 16px; height: 16px; border-radius: 50%; border: 3.5px solid var(--sign-ink); }
+.logo { width: 20px; height: 20px; flex-shrink: 0; background: url("../src-tauri/app-icon-small.svg") center / contain no-repeat; }
 .route { display: flex; align-items: center; min-width: 0; flex: 1; font-size: 13px; color: var(--sign-ink2); overflow: hidden; }
 .rs { display: flex; align-items: center; gap: 7px; white-space: nowrap; min-width: 0; }
 .rs > span { overflow: hidden; text-overflow: ellipsis; }

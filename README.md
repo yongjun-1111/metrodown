@@ -49,6 +49,25 @@ npm run tauri build      # installer: src-tauri/target/release/bundle/nsis/
 
 `npm run tauri dev` runs the app against the Vite dev server.
 
+## Icons
+
+The app uses the Blue Cutout document design (candidate 05, selected 2026-10-11).
+The app tile has a pale blue background; associated Markdown files use a separate,
+transparent paper silhouette. The title bar uses the same mark.
+
+Run `npm run icons` after changing `src-tauri/app-icon.svg`, `document-icon.svg`, or
+their `-small.svg` variants. It regenerates all bundled PNG/ICO/ICNS assets using
+the installed Tauri CLI. The Windows ICO files carry 16, 24, 32, 48, 64 and 256px
+frames; 16/24px use the larger, heavier small drawing. No image-generation API or
+additional image dependency is required. Generated scratch files stay under the
+ignored `src-tauri/target/` directory and are removed after the command.
+
+Windows packages `document.ico` as a resource and points all Metrodown Markdown
+association entries at it. Tauri removes the resource on uninstall. macOS packages
+`document.icns`; `src-tauri/Info.plist` supplies the document-icon association, which
+the release workflow checks in the built app bundle. Existing defaults and the
+read-only Viewer role are preserved.
+
 ## Code layout
 
 | Path | Role |

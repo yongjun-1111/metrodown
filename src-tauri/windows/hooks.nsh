@@ -8,6 +8,7 @@
 
 !define MDV_PROGID "Markdown document"
 !define MDV_EXE "metrodown.exe"
+!define MDV_DOCUMENT_ICON "document.ico"
 !define MDV_CAPS "Software\Metrodown\Capabilities"
 !define MDV_OLD_UNINST "Software\Microsoft\Windows\CurrentVersion\Uninstall\md-viewer"
 
@@ -38,6 +39,7 @@
   ReadRegStr $R0 HKCU "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.md\UserChoice" "ProgId"
   StrCmp $R0 "Applications\md-viewer.exe" 0 mdv_alias_drop
   WriteRegStr SHCTX "Software\Classes\Applications\md-viewer.exe" "FriendlyAppName" "Metrodown"
+  WriteRegStr SHCTX "Software\Classes\Applications\md-viewer.exe\DefaultIcon" "" '"$INSTDIR\${MDV_DOCUMENT_ICON}",0'
   WriteRegStr SHCTX "Software\Classes\Applications\md-viewer.exe\shell\open\command" "" '"$INSTDIR\${MDV_EXE}" "%1"'
   Goto mdv_alias_done
   mdv_alias_drop:
@@ -94,11 +96,12 @@
 
 !macro NSIS_HOOK_POSTINSTALL
   WriteRegStr SHCTX "Software\Classes\${MDV_PROGID}" "" "Markdown document"
-  WriteRegStr SHCTX "Software\Classes\${MDV_PROGID}\DefaultIcon" "" "$INSTDIR\${MDV_EXE},0"
+  WriteRegStr SHCTX "Software\Classes\${MDV_PROGID}\DefaultIcon" "" '"$INSTDIR\${MDV_DOCUMENT_ICON}",0'
   WriteRegStr SHCTX "Software\Classes\${MDV_PROGID}\shell\open\command" "" '"$INSTDIR\${MDV_EXE}" "%1"'
   WriteRegStr SHCTX "Software\Classes\.md\OpenWithProgids" "${MDV_PROGID}" ""
   WriteRegStr SHCTX "Software\Classes\.markdown\OpenWithProgids" "${MDV_PROGID}" ""
   WriteRegStr SHCTX "Software\Classes\Applications\${MDV_EXE}" "FriendlyAppName" "Metrodown"
+  WriteRegStr SHCTX "Software\Classes\Applications\${MDV_EXE}\DefaultIcon" "" '"$INSTDIR\${MDV_DOCUMENT_ICON}",0'
   WriteRegStr SHCTX "Software\Classes\Applications\${MDV_EXE}\SupportedTypes" ".md" ""
   WriteRegStr SHCTX "Software\Classes\Applications\${MDV_EXE}\SupportedTypes" ".markdown" ""
   WriteRegStr SHCTX "Software\Classes\Applications\${MDV_EXE}\shell\open\command" "" '"$INSTDIR\${MDV_EXE}" "%1"'

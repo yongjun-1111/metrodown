@@ -54,6 +54,16 @@ jobs:
       - run: npm test
       - run: npx tauri build
 
+      - name: Verify macOS document icon packaging
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          app="src-tauri/target/release/bundle/macos/Metrodown.app/Contents"
+          icon=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleDocumentTypes:0:CFBundleTypeIconFile' "$app/Info.plist")
+          test "$icon" = "document.icns"
+          cmp src-tauri/icons/document.icns "$app/Resources/$icon"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleDocumentTypes:0:CFBundleTypeRole' "$app/Info.plist")" = "Viewer"
+
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.name }}
